@@ -89,7 +89,7 @@ section{display:flex;flex-direction:column;gap:12px}
 
 <div class="wrap">
 <header>
-  <div class="eyebrow">Fong Tat · Three alternative versions · Draft for 16 Nov 2026</div>
+  <div class="eyebrow">Fong Tat · Two alternative versions · Draft for 16 Nov 2026</div>
   <h1>Fong Tat Architecture Options</h1>
   <p>Same off-the-shelf systems in every version. The versions differ in how the systems connect and how much is automated. Pick a version to see its architecture diagram, data flows and process flows.</p>
 </header>
@@ -102,9 +102,6 @@ const V={
  v1:{code:"V1",name:"Balanced",tagline:"Recommended starting point",
    approach:"Direct API integrations into Xero where the vendor supports them. Full BOM goes into the POS. On-site payments run through the POS.",
    manual:2,build:2,run:2,risk:"Vendor APIs may be limited (to confirm)",fit:"Vendors have usable APIs; moderate volumes"},
- v2:{code:"V2",name:"Lean",tagline:"Fallback or phase 1",
-   approach:"Minimal integration. Summary files and journals go into Xero, the POS takes only the grand total, and on-site payments use a Xero invoice with a Stripe link.",
-   manual:3,build:1,run:1,risk:"Re-keying errors; slower month-end",fit:"Low volumes, tight budget, fast go-live"},
  v3:{code:"V3",name:"Integrated hub",tagline:"Future phase",
    approach:"Every system connects through one integration layer that feeds Xero and a reporting database. Near real-time data and dashboards that combine financial and operational KPIs.",
    manual:1,build:3,run:3,risk:"More moving parts to monitor and support",fit:"High volumes; management wants live operational KPIs"}
