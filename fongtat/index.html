@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fong Tat Architecture Options</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: version tabs; each version = summary strip, architecture SVG, flow table, process lanes */
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --fg:#1b2230; --muted:#5d6676; --rule:#d9dde5; --line:#3a4456; --chip:#f1f3f7;
+  --dorm:#2d6b4f; --dorm-bg:#e3f1e9; --xero:#2f5fae; --xero-bg:#e5edfb; --hr:#6a4aa8; --hr-bg:#eee8f9;
+  --pos:#a3561c; --pos-bg:#fbeee2; --des:#7a5a2f; --des-bg:#f3ece1; --ext:#5d6676; --ext-bg:#eceef2;
+  --mid:#1f7a80; --mid-bg:#e0f2f3; --q:#b42e4b; --q-bg:#fbe6eb; --open:#b5651d; --open-bg:#fbefe3; --ok:#2d6b4f; --ok-bg:#e3f1e9;
+  --lane1:#eef5f1; --lane2:#eef2fa; --lane3:#f8f1ea;
+  --display:"Space Grotesk",system-ui,sans-serif; --body:"Inter",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12161d; --surface:#1b212b; --fg:#e7eaf0; --muted:#9aa3b2; --rule:#2c3440; --line:#b8c0cd; --chip:#242b37;
+  --dorm:#7fc4a0; --dorm-bg:#1c3326; --xero:#8fb0ec; --xero-bg:#1c2742; --hr:#b9a2ec; --hr-bg:#2a2140;
+  --pos:#e8a35e; --pos-bg:#3a2a1a; --des:#d4b07c; --des-bg:#33291b; --ext:#9aa3b2; --ext-bg:#262d39;
+  --mid:#6fcfd4; --mid-bg:#163236; --q:#f08aa0; --q-bg:#3d1f28; --open:#e8a35e; --open-bg:#3a2a1a; --ok:#7fc4a0; --ok-bg:#1c3326;
+  --lane1:#16241d; --lane2:#171f33; --lane3:#271d15; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12161d; --surface:#1b212b; --fg:#e7eaf0; --muted:#9aa3b2; --rule:#2c3440; --line:#b8c0cd; --chip:#242b37;
+  --dorm:#7fc4a0; --dorm-bg:#1c3326; --xero:#8fb0ec; --xero-bg:#1c2742; --hr:#b9a2ec; --hr-bg:#2a2140;
+  --pos:#e8a35e; --pos-bg:#3a2a1a; --des:#d4b07c; --des-bg:#33291b; --ext:#9aa3b2; --ext-bg:#262d39;
+  --mid:#6fcfd4; --mid-bg:#163236; --q:#f08aa0; --q-bg:#3d1f28; --open:#e8a35e; --open-bg:#3a2a1a; --ok:#7fc4a0; --ok-bg:#1c3326;
+  --lane1:#16241d; --lane2:#171f33; --lane3:#271d15; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.45}
+.wrap{max-width:1280px;margin:0 auto;padding-block:28px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:22px}
+header h1{font-family:var(--display);font-size:1.75rem;margin:0;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);max-width:75ch}
+.eyebrow{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.tabs{display:flex;flex-wrap:wrap;gap:8px}
+.tab{font:inherit;cursor:pointer;border:1px solid var(--rule);background:var(--surface);color:var(--fg);border-radius:8px;padding:10px 14px;text-align:left;display:flex;flex-direction:column;gap:2px;min-width:200px;flex:1 1 200px}
+.tab b{font-family:var(--display);font-size:1rem}
+.tab span{font-size:.78rem;color:var(--muted)}
+.tab[aria-selected="true"]{border-color:var(--fg);box-shadow:inset 0 -3px 0 var(--fg)}
+.tab:focus-visible{outline:2px solid var(--xero);outline-offset:2px}
+.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.sum div{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:10px 12px;min-width:0}
+.sum dt{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.sum dd{margin:2px 0 0;font-size:.88rem;font-weight:500}
+.lvl{display:inline-flex;gap:3px;vertical-align:middle;margin-right:6px}.lvl i{width:10px;height:10px;border-radius:2px;background:var(--rule)}.lvl i.on{background:var(--fg)}
+.approach{font-size:.95rem;max-width:90ch;margin:0}
+h2{font-family:var(--display);font-size:1.2rem;margin:0 0 10px}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:12px;overflow-x:auto}
+.panel svg{display:block;min-width:980px;width:100%;height:auto}
+svg text{font-family:var(--body);fill:var(--fg)}
+.lt{font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.02em}
+.ls{font-size:11px;fill:var(--muted)}
+.bx{fill:var(--surface);stroke:var(--rule);stroke-width:1.2}
+.bx.hub{stroke:var(--xero);stroke-width:2}.bx.mid{fill:var(--mid-bg);stroke:var(--mid);stroke-width:2}
+.bx.ext{fill:none;stroke:var(--muted);stroke-dasharray:5 4}
+.t{font-family:var(--display);font-weight:600;font-size:15px}
+.s{font-size:11px;fill:var(--muted)}.c{font-size:11.5px}
+.fl{stroke:var(--line);stroke-width:1.6;fill:none}.fl.tbc{stroke-dasharray:6 4}
+.ah{fill:var(--line)}.bd{fill:var(--fg)}.bt{fill:var(--bg);font-size:10px;font-weight:600;text-anchor:middle}
+.lb{font-size:10.5px;fill:var(--muted);paint-order:stroke;stroke:var(--surface);stroke-width:4px;stroke-linejoin:round}
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:.8rem;color:var(--muted);align-items:center;margin-top:8px}
+.tbl{overflow-x:auto;border:1px solid var(--rule);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:.85rem}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+tr:last-child td{border-bottom:0}
+td.n{font-variant-numeric:tabular-nums;font-weight:600;width:30px}
+.pill{display:inline-block;font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.pill.ok{color:var(--ok);background:var(--ok-bg)}.pill.open{color:var(--open);background:var(--open-bg)}
+.tag{display:inline-block;font-size:.66rem;font-weight:600;padding:2px 6px;border-radius:4px;white-space:nowrap}
+.t-dorm{color:var(--dorm);background:var(--dorm-bg)}.t-xero{color:var(--xero);background:var(--xero-bg)}.t-hr{color:var(--hr);background:var(--hr-bg)}
+.t-pos{color:var(--pos);background:var(--pos-bg)}.t-des{color:var(--des);background:var(--des-bg)}.t-ext{color:var(--ext);background:var(--ext-bg)}.t-mid{color:var(--mid);background:var(--mid-bg)}
+.qb{display:inline-block;font-size:.64rem;font-weight:700;color:var(--q);background:var(--q-bg);padding:1px 6px;border-radius:999px}
+.flow{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:14px 14px 4px}
+.flow h3{font-family:var(--display);font-size:1.02rem;margin:0}
+.bu{font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+.lane{display:flex;align-items:stretch;overflow-x:auto;padding:10px 0 12px}
+.step{flex:0 0 156px;border:1px solid var(--rule);border-radius:8px;padding:9px 10px;display:flex;flex-direction:column;gap:5px;background:var(--surface)}
+.step.cond{border-style:dashed;border-color:var(--q)}
+.step.chg{background:var(--mid-bg);border-color:var(--mid)}
+.step .n{font-size:.66rem;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
+.step .nm{font-size:.83rem;font-weight:600;line-height:1.3}
+.step .d{font-size:.73rem;color:var(--muted)}
+.step .v{font-size:.72rem;font-weight:600;color:var(--mid)}
+.step .ft{margin-top:auto;display:flex;flex-wrap:wrap;gap:4px}
+.ar{flex:0 0 20px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.ar svg{width:16px;height:12px}
+.sw{display:inline-block;width:22px;height:12px;border-radius:3px;vertical-align:middle;margin-right:6px}
+section{display:flex;flex-direction:column;gap:12px}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Fong Tat · Two alternative versions · Draft for 16 Nov 2026</div>
+  <h1>Fong Tat Architecture Options</h1>
+  <p>Same off-the-shelf systems in every version. The versions differ in how the systems connect and how much is automated. Pick a version to see its architecture diagram, data flows and process flows.</p>
+</header>
+<div class="tabs" role="tablist" id="tabs"></div>
+<main id="view" style="display:flex;flex-direction:column;gap:22px"></main>
+</div>
+
+<script>
+const V={
+ v1:{code:"V1",name:"Integrated Solutions",tagline:"Alternative",
+   approach:"Direct API integrations into Xero where each solution supports them. Full BOM goes into the POS. On-site payments run through the POS.",
+   manual:2,build:2,run:2,risk:"Vendor APIs may be limited (to confirm)",fit:"Vendors have usable APIs; moderate volumes"},
+ v2:{code:"V2",name:"Integrated hub",tagline:"Proposed solution",
+   approach:"Every system connects through one integration layer that feeds Xero and a reporting database. Near real-time data and dashboards that combine financial and operational KPIs.",
+   manual:1,build:3,run:3,risk:"More moving parts to monitor and support",fit:"High volumes; management wants live operational KPIs"}
+};
+const FLOWS={
+ v1:[[1,"Aupro / iSense","Xero","Rent invoices, deposits, dorm operating costs","API / webhook (per vendor)",0],[2,"Aupro / iSense","Ministry of Manpower","Occupancy, worker entry/exit records","Vendor's MOM reporting",1],[3,"Oppein Design","PRISM / Cegid","Full line-level BOM for quote and billing","Export / API from design system",0],[4,"PRISM / Cegid","Xero","Sales invoices, payments (incl. card terminal), customers, inventory value","Connector / API",0],[5,"PRISM / Cegid ↔ Xero Projects","MK Services","Installation jobs and schedule out to Xero Projects; change orders back to the POS for billing","Integration between POS and Xero Projects",0],[6,"Xero Projects","Xero","MK actual labour, man-days, materials, trips, variances and project invoices","Native: Xero Projects is part of Xero",1],[7,"Great HR / Zoho HR","Xero","Payroll journals by BU, CPF","Native integration / API",0],[8,"Xero","Dashboards","P&L, balance sheet, costs per BU + consolidated","Xero API",1]],
+ v2:[[1,"Aupro / iSense","Integration layer","Invoices, deposits, costs, occupancy, entry/exit","API / webhook",0],[2,"Aupro / iSense","Ministry of Manpower","Occupancy, worker entry/exit records","Vendor's MOM reporting",1],[3,"Oppein Design","PRISM / Cegid","Full BOM incl. revisions; stock reserved automatically","API via integration layer",0],[4,"PRISM / Cegid","Integration layer","Sales, payments, customers, stock movements","API",0],[5,"Integration layer ↔ Xero Projects","MK Services","Jobs from the POS into Xero Projects; change orders synced back to the POS","API via integration layer",0],[6,"Xero Projects","Xero","MK actual labour, materials, trips, variances and project invoices","Native: Xero Projects is part of Xero",1],[7,"Great HR / Zoho HR","Integration layer","Payroll journals by BU, headcount","API",0],[8,"Xero + reporting DB","Dashboards","Financial + operational KPIs, AI-assisted","Reporting database",0]]
+};
+
+/* ---------- SVG helpers ---------- */
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+function bx(x,y,w,h,title,sub,lines,cls="bx",accent){
+  let o=`<rect class="${cls}" x="${x}" y="${y}" width="${w}" height="${h}" rx="8"/>`;
+  if(accent) o+=`<rect x="${x}" y="${y}" width="${w}" height="4" rx="2" style="fill:var(${accent})"/>`;
+  o+=`<text x="${x+14}" y="${y+26}" class="t">${esc(title)}</text>`;
+  if(sub) o+=`<text x="${x+14}" y="${y+43}" class="s">${esc(sub)}</text>`;
+  (lines||[]).forEach((l,i)=>o+=`<text x="${x+14}" y="${y+64+i*18}" class="c">${esc(l)}</text>`);
+  return o;
+}
+function fl(d,n,bx_,by,label,lx,ly,tbc,anchor="start",both=false){
+  return `<path class="fl${tbc?" tbc":""}" d="${d}" ${both?'marker-start="url(#ah)"':""} marker-end="url(#ah)"/>`+
+   `<circle class="bd" cx="${bx_}" cy="${by}" r="9"/><text class="bt" x="${bx_}" y="${by+3.5}">${n}</text>`+
+   (label?`<text class="lb" x="${lx}" y="${ly}" text-anchor="${anchor}">${esc(label)}</text>`:"");
+}
+const DEFS=`<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker></defs>`;
+
+function lanesSVG(k){
+  const lean=k==="v2"; const f=FLOWS[k]; const tbc=n=>!f[n-1][5];
+  let s=`<svg viewBox="0 0 1200 715" role="img" aria-label="Version ${V[k].code} architecture diagram">${DEFS}`;
+  s+=`<rect x="20" y="20" width="360" height="665" rx="12" style="fill:var(--lane1)"/><rect x="420" y="20" width="360" height="665" rx="12" style="fill:var(--lane2)"/><rect x="820" y="20" width="360" height="665" rx="12" style="fill:var(--lane3)"/>`;
+  s+=`<text x="45" y="52" class="lt" style="fill:var(--dorm)">BU 1 · WORKERS' DORMITORY</text><text x="45" y="70" class="ls">400+ beds, 3 floors · MOM-regulated</text>`;
+  s+=`<text x="445" y="52" class="lt" style="fill:var(--xero)">BU 2 · CORE OFFICE</text><text x="445" y="70" class="ls">Accounting, HR, compliance, MIS</text>`;
+  s+=`<text x="845" y="52" class="lt" style="fill:var(--pos)">BU 3 · OPPEIN HOME FRANCHISE</text><text x="845" y="70" class="ls">Design, sales, installation via MK Services</text>`;
+  s+=bx(45,100,310,340,"Aupro / iSense","Dormitory vendor, one to be selected",["Bed, tenancy & tenant KYC","Face-recognition turnstiles (2)","CCTV + security box, 24/7 with audio","Wi-Fi to MOM standard","Public address system","Worker in/out & occupancy reports"].concat(lean?["","Monthly summary export to finance"]:[]),"bx","--dorm");
+  s+=bx(45,530,310,76,"Ministry of Manpower","External · statutory reporting",[],"bx ext");
+  s+=lean?bx(445,100,310,90,"Reports pack","Standard Xero reports",["+ monthly spreadsheet MIS pack"],"bx","--xero")
+         :bx(445,100,310,90,"Management dashboards","MIS per BU + consolidated",["Built on Xero API, AI-assisted"],"bx","--xero");
+  s+=bx(445,250,310,200,"Xero","Financial hub for all 3 BUs",["GL · AP · AR · inventory valuation","P&L, balance sheet per BU + consolidated","Project costs & billing from Xero Projects","Variances: BOM, labour, consumables, trips"],"bx hub");
+  s+=bx(445,530,310,130,"Great HR / Zoho HR","HRMS for staff of all 3 BUs + MK",["Payroll · CPF / SINDA · leave","Contracts · compliance records","KPIs & manager reviews"],"bx","--hr");
+  s+=bx(845,100,310,100,"Oppein Design System","From franchisor · 6 design terminals",["Designs, drawings, versions, BOM"],"bx","--des");
+  s+=bx(845,260,310,180,"PRISM / Cegid","POS + CRM, one to be selected · 6 terminals",["Quotes, billing, card payment terminal","Customer register (CRM)","Delivery & installation booking","Inventory: POs, receiving, issue"],"bx","--pos");
+  s+=bx(845,530,310,130,"Xero Projects","Used by MK Services (installation)",["On-site installation jobs & schedule","Change order management","Linked to POS and Xero"],"bx","--xero");
+  s+=fl("M355,350 H445",1,400,350,"Rent & costs",400,335,tbc(1),"middle");
+  s+=fl("M200,440 V530",2,200,485,"Statutory reports",216,489,false);
+  s+=fl("M1000,200 V260",3,1000,230,"Full BOM",1016,234,true);
+  s+=fl("M845,350 H755",4,800,350,"Sales & stock",800,335,tbc(4),"middle");
+  s+=fl("M1000,440 V530",5,1000,485,"Jobs, change orders",1016,489,tbc(5),"start",true);
+  s+=fl("M845,600 H800 V420 H755",6,800,510,"Costs",808,548,false);
+  s+=fl("M600,530 V450",7,600,490,"Payroll journals",616,494,tbc(7));
+  s+=fl("M600,250 V190",8,600,220,"Xero API",616,224,false);
+  return s+"</svg>";
+}
+function hubSVG(){
+  let s=`<svg viewBox="0 0 1130 710" role="img" aria-label="Version V2 integrated hub architecture diagram">${DEFS}`;
+  s+=`<text x="210" y="40" class="lt" style="fill:var(--muted)">OPERATIONAL SYSTEMS</text><text x="210" y="58" class="ls">BU 1 dormitory · BU 2 HR · BU 3 Oppein</text>`;
+  s+=`<text x="20" y="40" class="lt" style="fill:var(--muted)">EXTERNAL</text>`;
+  s+=bx(210,100,280,170,"Aupro / iSense","BU 1 · Dormitory vendor",["Bed, tenancy & KYC","Turnstiles, CCTV, Wi-Fi, PA","Occupancy & in/out data"],"bx","--dorm");
+  s+=bx(520,100,280,170,"Great HR / Zoho HR","BU 2 · HRMS, all BUs + MK",["Payroll, CPF / SINDA, leave","Contracts, KPIs"],"bx","--hr");
+  s+=bx(830,100,280,70,"Oppein Design System","BU 3 · Designs, versions, BOM",[],"bx","--des");
+  s+=bx(830,200,280,70,"PRISM / Cegid","BU 3 · POS + CRM, inventory, payments",[],"bx","--pos");
+  s+=bx(20,100,160,70,"MOM","Statutory reports",[],"bx ext");
+  s+=bx(20,420,160,150,"Xero Projects","Used by MK Services",["Installation jobs","Change orders","Time & materials"],"bx","--xero");
+  s+=`<rect class="bx mid" x="210" y="310" width="900" height="70" rx="8"/><text x="230" y="338" class="t" style="fill:var(--mid)">Integration layer (iPaaS / middleware)</text><text x="230" y="360" class="c">Field mapping · scheduling & retries · error log & alerts · one place to monitor every sync</text>`;
+  s+=bx(210,420,480,150,"Xero","Financial hub for all 3 BUs",["GL · AP · AR · inventory valuation","P&L, balance sheet per BU + consolidated","Project costs & billing from Xero Projects"],"bx hub");
+  s+=`<rect class="bx mid" x="720" y="420" width="390" height="150" rx="8"/><text x="734" y="446" class="t" style="fill:var(--mid)">Reporting database</text><text x="734" y="463" class="s">Operational data store</text><text x="734" y="484" class="c">Occupancy, pipeline, installs,</text><text x="734" y="502" class="c">stock, headcount + Xero financials</text>`;
+  s+=bx(210,610,900,70,"Management dashboards","MIS per BU + consolidated · near real-time · AI-assisted queries",[],"bx","--xero");
+  s+=fl("M210,135 H180",2,195,118,"",0,0,false);
+  s+=fl("M970,170 V200",3,970,185,"Full BOM + revisions",986,189,true);
+  s+=fl("M350,270 V310",1,350,290,"Invoices, occupancy",366,294,true);
+  s+=fl("M660,270 V310",7,660,290,"Payroll, headcount",676,294,true);
+  s+=fl("M970,270 V310",4,970,290,"Sales, stock",986,294,true);
+  s+=fl("M450,380 V420",11,450,400,"Financial postings",466,404,true).replace(">11<",">·<");
+  s+=fl("M915,380 V420",11,915,400,"Operational data",931,404,true).replace(">11<",">·<");
+  s+=fl("M210,345 H100 V420",5,100,382,"Jobs, changes",116,386,true,"start",true);
+  s+=fl("M180,495 H210",6,195,478,"",0,0,false);
+  s+=fl("M660,570 V610",8,660,590,"Financial + operational KPIs",676,594,true);
+  return s+"</svg>";
+}
+
+/* ---------- processes ---------- */
+const SYS={dorm:["Aupro / iSense","t-dorm"],pos:["PRISM / Cegid","t-pos"],des:["Oppein Design","t-des"],xero:["Xero","t-xero"],hr:["HRMS","t-hr"],ext:["Manual / external","t-ext"],mid:["Integration layer","t-mid"],dash:["Dashboards","t-xero"],xp:["Xero Projects","t-xero"]};
+function procs(k){
+  const L=false,H=k==="v2",pick=o=>o[k]||"";
+  const month=[
+    ["Dorm revenue & costs","From Aupro / iSense",["dorm","xero"],"Q4",0,pick({v1:"Already in Xero via API",v2:"Already synced"})],
+    ["Oppein sales & stock value","From PRISM / Cegid",["pos","xero"],"",0,pick({v1:"Already in Xero via connector",v2:"Already synced"})],
+    ["Payroll journals","Split by BU",["hr","xero"],"",0,L?"CSV import":""],
+    ["MK project costs","Actuals and variances from Xero Projects",["xp","xero"],"",0,""],
+    ["Allocations & intercompany","Core office costs, MK charges to Oppein",["xero"],"Q11, Q12",0,""],
+    ["BU & consolidated reports","P&L, balance sheet, cost analysis",["xero"],"Q11",0,""],
+    ["Management reporting","MIS per BU",L?["xero"]:["dash"],"",0,pick({v1:"Dashboards on Xero API",v2:"Financial + operational KPIs, near real-time"})]];
+  if(H) month.unshift(["Check sync log","Resolve failed syncs before close",["mid"],"",0,"Only in this version"]);
+  return [
+   ["BU 1 · Dormitory","--dorm","Worker move-in to monthly billing",[
+    ["Bed booking","Employer requests beds and period",["dorm"],"Q1",0,""],
+    ["Worker KYC","Work permit, passport, employer details",["dorm"],"",0,""],
+    ["Bed allocation & tenancy","Assign bed, issue tenancy agreement",["dorm"],"Q2",0,""],
+    ["Face enrolment","Register worker on turnstiles",["dorm"],"",0,""],
+    ["Monthly rent invoice","Raised per bed / per employer",L?["dorm"]:H?["dorm","mid","xero"]:["dorm","xero"],"Q1, Q4",0,pick({v1:"Pushed to Xero by API",v2:"Synced to Xero via integration layer"})],
+    ["Payment & reconciliation","Receipt matched to invoice",["xero"],"",0,""],
+    ["Move-out","Revoke access, refund deposit, free bed",["dorm","xero"],"Q2",0,""]]],
+   ["BU 1 · Dormitory","--dorm","Daily operations & MOM compliance",[
+    ["Turnstile entry / exit","Face recognition logs every movement",["dorm"],"",0,""],
+    ["CCTV & security box","24/7 recording incl. audio at gate",["dorm"],"",0,""],
+    ["Occupancy & in/out records","Live count per floor and room",["dorm"],"",0,H?"Also fed to reporting DB":""],
+    ["Statutory report","Submitted to Ministry of Manpower",["dorm","ext"],"Q3",0,""],
+    ["Maintenance roster","Lift, fire equipment, generator, cleaning",["ext"],"Q13",1,"Out of scope; cost separately"]]],
+   ["BU 3 · Oppein Home","--pos","Sale to installation",[
+    ["Lead / walk-in","Register customer",["pos"],"",0,""],
+    ["Consultation & site measure","Needs, budget, site dimensions",["ext"],"",0,""],
+    ["Design iterations","Drawings and mock-ups, versioned",["des"],"",0,""],
+    ["Final design → BOM","BOM generated on customer approval",["des","pos"],"Q5",0,pick({v1:"Full BOM loaded into POS",v2:"Full BOM synced automatically"})],
+    ["Quote & deposit","Customer accepts, pays deposit",["pos"],"",0,""],
+    ["Stock check & purchase","Reserve stock or PO to Oppein China",["pos"],"Q6",0,H?"Reservation automatic":""],
+    ["Goods receipt","Receive, tag and label goods",["pos"],"",0,""],
+    ["Schedule installation","Agree slot; job handed to Xero Projects",["pos","xp"],"Q7",0,pick({v1:"Job sent from POS to Xero Projects",v2:"Job synced via integration layer"})],
+    ["Create MK job","Crew, man-day estimate, materials",["xp"],"Q10",0,""],
+    ["On-site installation","MK crew installs; time and materials logged",["xp"],"",0,""],
+    ["Change order","If site differs: BOM, labour, trips revised; customer approves",["xp","pos"],"Q8",1,pick({v1:"Raised in Xero Projects, sent to POS for billing",v2:"Raised in Xero Projects, synced to POS"})],
+    ["Final bill & payment","Balance collected",["pos"],"Q9",0,pick({v1:"Through POS payment terminal",v2:"POS, auto-reconciled in Xero"})],
+    ["Job close","Actual vs. estimate; costs posted to Xero",["xp","xero"],"",0,""]]],
+   ["BU 2 · Core Office","--xero","Month-end close & reporting",month],
+   ["BU 2 · Core Office","--hr","Hire to pay",[
+    ["Hire & contract","Employee record, employment contract",["hr"],"Q10",0,""],
+    ["Leave & attendance","Medical, annual, unpaid, maternity, etc.",["hr"],"",0,""],
+    ["Monthly payroll","Incl. CPF / SINDA contributions",["hr"],"",0,""],
+    ["Post to Xero","Payroll journal by BU",["hr","xero"],"",0,pick({v1:"Native integration",v2:"Via integration layer"})],
+    ["KPIs & reviews","Targets, manager reviews, history",["hr"],"",0,""],
+    ["System access","Grant / revoke access per role",["ext"],"Q14",0,""]]]
+  ];
+}
+const AR='<div class="ar" aria-hidden="true"><svg viewBox="0 0 16 12"><path d="M0 6h12M8 1l6 5-6 5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></div>';
+const lvl=n=>`<span class="lvl" aria-hidden="true">${[1,2,3].map(i=>`<i class="${i<=n?"on":""}"></i>`).join("")}</span>${["","Low","Medium","High"][n]}`;
+
+function render(k){
+  const v=V[k];
+  const diagram=k==="v2"?hubSVG():lanesSVG(k);
+  const rows=FLOWS[k].map(f=>`<tr><td class="n">${f[0]}</td><td>${esc(f[1])} → ${esc(f[2])}</td><td>${esc(f[3])}</td><td>${esc(f[4])}</td><td><span class="pill ${f[5]?"ok":"open"}">${f[5]?"Agreed":"To confirm"}</span></td></tr>`).join("");
+  const flows=procs(k).map(([bu,col,title,steps])=>`<div class="flow"><div class="bu" style="color:var(${col})">${bu}</div><h3>${esc(title)}</h3><div class="lane">`+
+    steps.map((s,i)=>{const [nm,d,sys,q,cond,note]=s;
+      const chg=note&&!/Out of scope/.test(note);
+      return `<div class="step${cond?" cond":""}${chg?" chg":""}"><div class="n">${String(i+1).padStart(2,"0")}</div><div class="nm">${esc(nm)}</div><div class="d">${esc(d)}</div>${note?`<div class="v">${esc(note)}</div>`:""}<div class="ft">${sys.map(x=>`<span class="tag ${SYS[x][1]}">${SYS[x][0]}</span>`).join("")}${q?q.split(", ").map(x=>`<span class="qb">${x}</span>`).join(""):""}</div></div>`}).join(AR)+`</div></div>`).join("");
+  document.getElementById("view").innerHTML=`
+  <section>
+    <p class="approach"><strong>${v.code} · ${v.name}.</strong> ${esc(v.approach)}</p>
+    <dl class="sum" style="margin:0">
+      <div><dt>Positioning</dt><dd>${v.tagline}</dd></div>
+      <div><dt>Manual effort</dt><dd>${lvl(v.manual)}</dd></div>
+      <div><dt>Integration build</dt><dd>${lvl(v.build)}</dd></div>
+      <div><dt>Running cost</dt><dd>${lvl(v.run)}</dd></div>
+      <div><dt>Main risk</dt><dd>${esc(v.risk)}</dd></div>
+      <div><dt>Best fit when</dt><dd>${esc(v.fit)}</dd></div>
+    </dl>
+  </section>
+  <section>
+    <h2>Architecture diagram</h2>
+    <div class="panel">${diagram}</div>
+    <div class="legend">
+      <span><svg width="34" height="10"><line x1="0" y1="5" x2="34" y2="5" class="fl"/></svg> Flow agreed</span>
+      <span><svg width="34" height="10"><line x1="0" y1="5" x2="34" y2="5" class="fl tbc"/></svg> Method or scope to confirm</span>
+      <span><svg width="34" height="14"><rect x="1" y="1" width="32" height="12" rx="3" class="bx ext"/></svg> External party</span>
+    </div>
+  </section>
+  <section>
+    <h2>Data flows</h2>
+    <div class="tbl"><table><thead><tr><th>#</th><th>From → To</th><th>Data</th><th>How</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table></div>
+  </section>
+  <section>
+    <h2>Process flows</h2>
+    <div class="legend" style="margin:0">
+      <span><span class="sw" style="background:var(--mid-bg);border:1px solid var(--mid)"></span>Works differently in this version</span>
+      <span><span class="sw" style="border:1px dashed var(--q)"></span>Only when needed</span>
+      <span><span class="qb">Q</span> Client question (see Client Questions sheet)</span>
+    </div>
+    ${flows}
+  </section>`;
+  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",b.dataset.k===k));
+}
+document.getElementById("tabs").innerHTML=Object.entries(V).map(([k,v])=>`<button class="tab" role="tab" data-k="${k}"><b>${v.code} · ${v.name}</b><span>${v.tagline}</span></button>`).join("");
+document.getElementById("tabs").addEventListener("click",e=>{const b=e.target.closest(".tab");if(b){location.hash=b.dataset.k;}});
+function route(){const k=(location.hash||"").slice(1);render(V[k]?k:"v1");}
+window.addEventListener("hashchange",route); route();
+</script>
+
+</html>
