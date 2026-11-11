@@ -102,14 +102,13 @@ const V={
  v1:{code:"V1",name:"Balanced",tagline:"Recommended starting point",
    approach:"Direct API integrations into Xero where the vendor supports them. Full BOM goes into the POS. On-site payments run through the POS.",
    manual:2,build:2,run:2,risk:"Vendor APIs may be limited (to confirm)",fit:"Vendors have usable APIs; moderate volumes"},
- v3:{code:"V3",name:"Integrated hub",tagline:"Future phase",
+ v2:{code:"V2",name:"Integrated hub",tagline:"Future phase",
    approach:"Every system connects through one integration layer that feeds Xero and a reporting database. Near real-time data and dashboards that combine financial and operational KPIs.",
    manual:1,build:3,run:3,risk:"More moving parts to monitor and support",fit:"High volumes; management wants live operational KPIs"}
 };
 const FLOWS={
  v1:[[1,"Aupro / iSense","Xero","Rent invoices, deposits, dorm operating costs","API / webhook (per vendor)",0],[2,"Aupro / iSense","Ministry of Manpower","Occupancy, worker entry/exit records","Vendor's MOM reporting",1],[3,"Oppein Design","PRISM / Cegid","Full line-level BOM for quote and billing","Export / API from design system",0],[4,"PRISM / Cegid","Xero","Sales invoices, payments, customers, inventory value","Connector / API",0],[5,"PRISM / Cegid","Xero Projects","Installation job, change orders and billing","Connector / API",0],[6,"PRISM / Cegid","MK Services","Installation slot and job details","Scheduling in POS",1],[7,"MK Services","Xero Projects","Actual labour, man-days, materials, trips (variances)","Entered in Xero Projects",1],[8,"Payments","PRISM / Cegid","Showroom and on-site payments","POS payment terminal",0],[9,"Great HR / Zoho HR","Xero","Payroll journals by BU, CPF","Native integration / API",0],[10,"Xero","Dashboards","P&L, balance sheet, costs per BU + consolidated","Xero API",1]],
- v2:[[1,"Aupro / iSense","Xero","Monthly rent & cost summary","CSV export, imported as journal",1],[2,"Aupro / iSense","Ministry of Manpower","Occupancy, worker entry/exit records","Vendor's MOM reporting",1],[3,"Oppein Design","PRISM / Cegid","Grand total only; BOM stays in design system","Keyed into POS",0],[4,"PRISM / Cegid","Xero","Daily sales & payments summary","Summary export / journal",1],[5,"Sales / Ops","Xero Projects","Installation job and change orders","Re-keyed manually in Xero",1],[6,"PRISM / Cegid","MK Services","Installation slot","Calendar in POS / shared calendar",1],[7,"MK Services","Xero Projects","Actual labour, materials, trips (variances)","Entered in Xero Projects",1],[8,"Stripe link","Xero","On-site and change-order payments","Xero invoice + Stripe payment link",0],[9,"Great HR / Zoho HR","Xero","Monthly payroll journal by BU","CSV export / import",1],[10,"Xero","Reports pack","Standard Xero reports + spreadsheet MIS pack","Xero reports / export",1]],
- v3:[[1,"Aupro / iSense","Integration layer","Invoices, deposits, costs, occupancy, entry/exit","API / webhook",0],[2,"Aupro / iSense","Ministry of Manpower","Occupancy, worker entry/exit records","Vendor's MOM reporting",1],[3,"Oppein Design","PRISM / Cegid","Full BOM incl. revisions; stock reserved automatically","API via integration layer",0],[4,"PRISM / Cegid","Integration layer","Sales, payments, customers, stock movements","API",0],[5,"Integration layer","Xero / Xero Projects","Postings, auto-created jobs and change orders","API",0],[6,"Integration layer","MK Services","Schedule pushed to installer mobile view","API / app",0],[7,"MK Services","Xero Projects","Actual time and materials from site","Mobile time entry",1],[8,"Payments","PRISM / Cegid","Showroom and on-site payments, auto-reconciled","Payment terminal + API",0],[9,"Great HR / Zoho HR","Integration layer","Payroll journals by BU, headcount","API",0],[10,"Xero + reporting DB","Dashboards","Financial + operational KPIs, AI-assisted","Reporting database",0]]
+ v2:[[1,"Aupro / iSense","Integration layer","Invoices, deposits, costs, occupancy, entry/exit","API / webhook",0],[2,"Aupro / iSense","Ministry of Manpower","Occupancy, worker entry/exit records","Vendor's MOM reporting",1],[3,"Oppein Design","PRISM / Cegid","Full BOM incl. revisions; stock reserved automatically","API via integration layer",0],[4,"PRISM / Cegid","Integration layer","Sales, payments, customers, stock movements","API",0],[5,"Integration layer","Xero / Xero Projects","Postings, auto-created jobs and change orders","API",0],[6,"Integration layer","MK Services","Schedule pushed to installer mobile view","API / app",0],[7,"MK Services","Xero Projects","Actual time and materials from site","Mobile time entry",1],[8,"Payments","PRISM / Cegid","Showroom and on-site payments, auto-reconciled","Payment terminal + API",0],[9,"Great HR / Zoho HR","Integration layer","Payroll journals by BU, headcount","API",0],[10,"Xero + reporting DB","Dashboards","Financial + operational KPIs, AI-assisted","Reporting database",0]]
 };
 
 /* ---------- SVG helpers ---------- */
@@ -160,7 +159,7 @@ function lanesSVG(k){
   return s+"</svg>";
 }
 function hubSVG(){
-  let s=`<svg viewBox="0 0 1310 710" role="img" aria-label="Version V3 integrated hub architecture diagram">${DEFS}`;
+  let s=`<svg viewBox="0 0 1310 710" role="img" aria-label="Version V2 integrated hub architecture diagram">${DEFS}`;
   s+=`<text x="210" y="40" class="lt" style="fill:var(--muted)">OPERATIONAL SYSTEMS</text><text x="210" y="58" class="ls">BU 1 dormitory · BU 2 HR · BU 3 Oppein</text>`;
   s+=`<text x="20" y="40" class="lt" style="fill:var(--muted)">EXTERNAL</text>`;
   s+=bx(210,100,280,170,"Aupro / iSense","BU 1 · Dormitory vendor",["Bed, tenancy & KYC","Turnstiles, CCTV, Wi-Fi, PA","Occupancy & in/out data"],"bx","--dorm");
@@ -191,15 +190,15 @@ function hubSVG(){
 /* ---------- processes ---------- */
 const SYS={dorm:["Aupro / iSense","t-dorm"],pos:["PRISM / Cegid","t-pos"],des:["Oppein Design","t-des"],xero:["Xero","t-xero"],hr:["HRMS","t-hr"],ext:["Manual / external","t-ext"],mid:["Integration layer","t-mid"],dash:["Dashboards","t-xero"]};
 function procs(k){
-  const L=k==="v2",H=k==="v3",pick=o=>o[k]||"";
+  const L=false,H=k==="v2",pick=o=>o[k]||"";
   const month=[
-    ["Dorm revenue & costs","From Aupro / iSense",["dorm","xero"],"Q4",0,pick({v1:"Already in Xero via API",v2:"Import monthly summary journal",v3:"Already synced"})],
-    ["Oppein sales & stock value","From PRISM / Cegid",["pos","xero"],"",0,pick({v1:"Already in Xero via connector",v2:"Import daily summaries",v3:"Already synced"})],
+    ["Dorm revenue & costs","From Aupro / iSense",["dorm","xero"],"Q4",0,pick({v1:"Already in Xero via API",v2:"Already synced"})],
+    ["Oppein sales & stock value","From PRISM / Cegid",["pos","xero"],"",0,pick({v1:"Already in Xero via connector",v2:"Already synced"})],
     ["Payroll journals","Split by BU",["hr","xero"],"",0,L?"CSV import":""],
     ["MK project costs","Actuals and variances",["xero"],"",0,""],
     ["Allocations & intercompany","Core office costs, MK charges to Oppein",["xero"],"Q11, Q12",0,""],
     ["BU & consolidated reports","P&L, balance sheet, cost analysis",["xero"],"Q11",0,""],
-    ["Management reporting","MIS per BU",L?["xero"]:["dash"],"",0,pick({v1:"Dashboards on Xero API",v2:"Spreadsheet MIS pack from Xero reports",v3:"Financial + operational KPIs, near real-time"})]];
+    ["Management reporting","MIS per BU",L?["xero"]:["dash"],"",0,pick({v1:"Dashboards on Xero API",v2:"Financial + operational KPIs, near real-time"})]];
   if(H) month.unshift(["Check sync log","Resolve failed syncs before close",["mid"],"",0,"Only in this version"]);
   return [
    ["BU 1 · Dormitory","--dorm","Worker move-in to monthly billing",[
@@ -207,7 +206,7 @@ function procs(k){
     ["Worker KYC","Work permit, passport, employer details",["dorm"],"",0,""],
     ["Bed allocation & tenancy","Assign bed, issue tenancy agreement",["dorm"],"Q2",0,""],
     ["Face enrolment","Register worker on turnstiles",["dorm"],"",0,""],
-    ["Monthly rent invoice","Raised per bed / per employer",L?["dorm"]:H?["dorm","mid","xero"]:["dorm","xero"],"Q1, Q4",0,pick({v1:"Pushed to Xero by API",v2:"Summary journal to Xero monthly",v3:"Synced to Xero via integration layer"})],
+    ["Monthly rent invoice","Raised per bed / per employer",L?["dorm"]:H?["dorm","mid","xero"]:["dorm","xero"],"Q1, Q4",0,pick({v1:"Pushed to Xero by API",v2:"Synced to Xero via integration layer"})],
     ["Payment & reconciliation","Receipt matched to invoice",["xero"],"",0,""],
     ["Move-out","Revoke access, refund deposit, free bed",["dorm","xero"],"Q2",0,""]]],
    ["BU 1 · Dormitory","--dorm","Daily operations & MOM compliance",[
@@ -220,22 +219,22 @@ function procs(k){
     ["Lead / walk-in","Register customer",["pos"],"",0,""],
     ["Consultation & site measure","Needs, budget, site dimensions",["ext"],"",0,""],
     ["Design iterations","Drawings and mock-ups, versioned",["des"],"",0,""],
-    ["Final design → BOM","BOM generated on customer approval",["des","pos"],"Q5",0,pick({v1:"Full BOM loaded into POS",v2:"Grand total keyed into POS",v3:"Full BOM synced automatically"})],
+    ["Final design → BOM","BOM generated on customer approval",["des","pos"],"Q5",0,pick({v1:"Full BOM loaded into POS",v2:"Full BOM synced automatically"})],
     ["Quote & deposit","Customer accepts, pays deposit",["pos"],"",0,""],
     ["Stock check & purchase","Reserve stock or PO to Oppein China",["pos"],"Q6",0,H?"Reservation automatic":""],
     ["Goods receipt","Receive, tag and label goods",["pos"],"",0,""],
     ["Schedule installation","Agree slot with customer",["pos"],"Q7",0,H?"Pushed to MK mobile view":""],
-    ["Create MK job","Job, crew and man-day estimate",["xero"],"Q10",0,pick({v1:"Created from POS via connector",v2:"Keyed manually in Xero Projects",v3:"Auto-created via integration layer"})],
+    ["Create MK job","Job, crew and man-day estimate",["xero"],"Q10",0,pick({v1:"Created from POS via connector",v2:"Auto-created via integration layer"})],
     ["On-site installation","MK crew installs",["ext"],"",0,H?"Time & materials logged on mobile":""],
-    ["Change order","If site differs: BOM, labour, trips revised; customer approves",L?["xero"]:["xero","pos"],"Q8",1,pick({v1:"Recorded in POS and Xero Projects",v2:"Xero Projects only; invoiced from Xero",v3:"Revised BOM re-synced; variance automatic"})],
-    ["Final bill & payment","Balance collected",L?["xero"]:["pos"],"Q9",0,pick({v1:"Through POS payment terminal",v2:"Xero invoice + Stripe payment link",v3:"POS, auto-reconciled in Xero"})],
+    ["Change order","If site differs: BOM, labour, trips revised; customer approves",L?["xero"]:["xero","pos"],"Q8",1,pick({v1:"Recorded in POS and Xero Projects",v2:"Revised BOM re-synced; variance automatic"})],
+    ["Final bill & payment","Balance collected",L?["xero"]:["pos"],"Q9",0,pick({v1:"Through POS payment terminal",v2:"POS, auto-reconciled in Xero"})],
     ["Job close","Actual vs. estimate, variances posted",["xero"],"",0,""]]],
    ["BU 2 · Core Office","--xero","Month-end close & reporting",month],
    ["BU 2 · Core Office","--hr","Hire to pay",[
     ["Hire & contract","Employee record, employment contract",["hr"],"Q10",0,""],
     ["Leave & attendance","Medical, annual, unpaid, maternity, etc.",["hr"],"",0,""],
     ["Monthly payroll","Incl. CPF / SINDA contributions",["hr"],"",0,""],
-    ["Post to Xero","Payroll journal by BU",["hr","xero"],"",0,pick({v1:"Native integration",v2:"CSV export / import",v3:"Via integration layer"})],
+    ["Post to Xero","Payroll journal by BU",["hr","xero"],"",0,pick({v1:"Native integration",v2:"Via integration layer"})],
     ["KPIs & reviews","Targets, manager reviews, history",["hr"],"",0,""],
     ["System access","Grant / revoke access per role",["ext"],"Q14",0,""]]]
   ];
@@ -245,7 +244,7 @@ const lvl=n=>`<span class="lvl" aria-hidden="true">${[1,2,3].map(i=>`<i class="$
 
 function render(k){
   const v=V[k];
-  const diagram=k==="v3"?hubSVG():lanesSVG(k);
+  const diagram=k==="v2"?hubSVG():lanesSVG(k);
   const rows=FLOWS[k].map(f=>`<tr><td class="n">${f[0]}</td><td>${esc(f[1])} → ${esc(f[2])}</td><td>${esc(f[3])}</td><td>${esc(f[4])}</td><td><span class="pill ${f[5]?"ok":"open"}">${f[5]?"Agreed":"To confirm"}</span></td></tr>`).join("");
   const flows=procs(k).map(([bu,col,title,steps])=>`<div class="flow"><div class="bu" style="color:var(${col})">${bu}</div><h3>${esc(title)}</h3><div class="lane">`+
     steps.map((s,i)=>{const [nm,d,sys,q,cond,note]=s;
