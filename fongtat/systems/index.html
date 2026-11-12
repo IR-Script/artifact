@@ -1,0 +1,438 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Fong Tat Systems Diagram</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one-page architecture sheet. Scope, diagram, design rules, process flows, integration register, systems, questions. */
+:root{
+  --bg:#f4f6f8; --panel:#ffffff; --fg:#17212e; --muted:#5b6676; --line:#d2d9e2;
+  --accent:#0b6b78;
+  --v-bg:#e1ecfa; --v-fg:#1f4f8f;
+  --s-bg:#e0f1e6; --s-fg:#1d6439;
+  --i-bg:#d9f0f2; --i-fg:#0b6b78;
+  --o-bg:#ece5f7; --o-fg:#5a3b9b;
+  --warn:#8a5a08; --warn-bg:#fbeecd;
+  --bad:#9d241b; --bad-bg:#fbe1de;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f141b; --panel:#17202a; --fg:#e4e9ef; --muted:#98a4b4; --line:#2c3644; --accent:#5cc6d3;
+  --v-bg:#1a2b46; --v-fg:#9cc2f4; --s-bg:#163828; --s-fg:#8fd5a7; --i-bg:#123a40; --i-fg:#5cc6d3; --o-bg:#2d2346; --o-fg:#c5afef;
+  --warn:#efc462; --warn-bg:#3b2e10; --bad:#f19a90; --bad-bg:#44211e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f141b; --panel:#17202a; --fg:#e4e9ef; --muted:#98a4b4; --line:#2c3644; --accent:#5cc6d3;
+  --v-bg:#1a2b46; --v-fg:#9cc2f4; --s-bg:#163828; --s-fg:#8fd5a7; --i-bg:#123a40; --i-fg:#5cc6d3; --o-bg:#2d2346; --o-fg:#c5afef;
+  --warn:#efc462; --warn-bg:#3b2e10; --bad:#f19a90; --bad-bg:#44211e; color-scheme:dark}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.55;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:40px}
+h1{font-size:28px;line-height:1.2;margin:0;font-weight:600;text-wrap:balance}
+h2{font-size:19px;margin:0;font-weight:600;text-wrap:balance}
+h3{font-size:13px;margin:0;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+p{margin:0}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.sub{color:var(--muted);max-width:80ch;margin-top:6px}
+.meta{font-family:var(--f-mono);font-size:12px;color:var(--muted);display:flex;gap:6px 18px;flex-wrap:wrap;margin-top:10px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13.5px;margin-top:14px}
+section{display:flex;flex-direction:column;gap:14px;min-width:0;scroll-margin-top:16px}
+.find{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.find>div{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px;min-width:0}
+.find b{display:block;font-size:15px;font-weight:600;margin-bottom:4px}
+.find span{color:var(--muted);font-size:13.5px}
+.sw{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px;overflow-x:auto}
+.sw svg{display:block;min-width:1000px;width:100%;height:auto}
+figure{margin:0}
+.lg{display:flex;gap:8px 20px;flex-wrap:wrap;font-size:13px;color:var(--muted);align-items:center}
+.lg i{display:inline-block;width:26px;height:0;border-top:2px solid;margin-right:6px;vertical-align:middle}
+.lg s{display:inline-block;width:16px;height:12px;border:1.4px solid;border-radius:2px;margin-right:6px;vertical-align:middle;text-decoration:none}
+.k-ir{border-color:var(--i-fg)}.k-std{border-color:var(--s-fg)}.k-tbc{border-color:var(--warn);border-top-style:dashed}.k-opt{border-color:var(--muted);border-top-style:dotted}
+.b-v{background:var(--v-bg);border-color:var(--v-fg)}.b-s{background:var(--s-bg);border-color:var(--s-fg)}.b-i{background:var(--i-bg);border-color:var(--i-fg)}.b-o{background:var(--o-bg);border-color:var(--o-fg)}.b-x{background:var(--panel);border-color:var(--muted);border-style:dashed}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;min-width:860px;font-size:13.5px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:600;background:var(--bg)}
+tr:last-child td{border-bottom:0}
+.idn{display:inline-block;font-family:var(--f-mono);font-size:11.5px;font-weight:500;padding:1px 7px;border-radius:10px;color:var(--panel);white-space:nowrap}
+.d-ir{background:var(--i-fg)}.d-std{background:var(--s-fg)}.d-tbc{background:var(--warn)}.d-opt{background:var(--muted)}
+.st{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:3px;white-space:nowrap}
+.st-ir{background:var(--i-bg);color:var(--i-fg)}.st-std{background:var(--s-bg);color:var(--s-fg)}.st-tbc{background:var(--warn-bg);color:var(--warn)}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.rule{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 16px;min-width:0;font-size:14px}
+.rule b{display:block;margin-bottom:2px}
+.rule span{color:var(--muted);font-size:13.5px}
+/* process flows */
+.flow{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px 16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.flow-h{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.flow-h b{font-size:15.5px}
+.flow-h span{font-size:13px;color:var(--muted)}
+ol.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:10px}
+ol.steps li{border:1px solid var(--line);border-radius:5px;padding:10px 11px;display:flex;flex-direction:column;gap:5px;min-width:0;background:var(--bg)}
+ol.steps li.alt{border-style:dashed}
+.sn{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.stt{font-weight:600;font-size:13.5px;line-height:1.3}
+.sd{font-size:12.5px;color:var(--muted);line-height:1.4}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:auto;padding-top:2px}
+.c{font-size:11px;font-weight:500;padding:0 6px;border-radius:3px;white-space:nowrap;border:1px solid}
+.c-v{background:var(--v-bg);color:var(--v-fg);border-color:transparent}
+.c-s{background:var(--s-bg);color:var(--s-fg);border-color:transparent}
+.c-i{background:var(--i-bg);color:var(--i-fg);border-color:transparent}
+.c-o{background:var(--o-bg);color:var(--o-fg);border-color:transparent}
+.c-m{background:transparent;color:var(--muted);border-color:var(--line)}
+.c-int{font-family:var(--f-mono);background:var(--panel);color:var(--fg);border-color:var(--line)}
+a.c-q{font-family:var(--f-mono);background:var(--warn-bg);color:var(--warn);border-color:transparent;text-decoration:none}
+a.c-q:hover{text-decoration:underline}
+/* questions */
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px}
+.qcard{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+ol.q{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px}
+ol.q li{display:grid;grid-template-columns:42px 1fr;gap:4px;scroll-margin-top:16px;border-radius:4px}
+ol.q li:target{background:var(--warn-bg)}
+ol.q li>code{font-family:var(--f-mono);font-size:12px;color:var(--muted);padding-top:2px}
+.blk{display:inline-block;font-size:11px;font-weight:600;padding:0 6px;border-radius:3px;background:var(--bad-bg);color:var(--bad);margin-left:4px;white-space:nowrap}
+.note{font-size:13px;color:var(--muted);max-width:95ch}
+ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+/* SVG */
+.band{fill:none;stroke:var(--line);stroke-width:1.4}
+.pkg{fill:none;stroke:var(--v-fg);stroke-width:1.2;stroke-dasharray:5 4}
+.bx-v{fill:var(--v-bg);stroke:var(--v-fg);stroke-width:1.2}
+.bx-s{fill:var(--s-bg);stroke:var(--s-fg);stroke-width:1.2}
+.bx-i{fill:var(--i-bg);stroke:var(--i-fg);stroke-width:2}
+.bx-o{fill:var(--o-bg);stroke:var(--o-fg);stroke-width:1.2}
+.bx-x{fill:var(--panel);stroke:var(--muted);stroke-width:1.2;stroke-dasharray:5 4}
+.bx-n{fill:var(--bg);stroke:var(--muted);stroke-width:1.2;stroke-dasharray:2 3}
+.t{font-family:var(--f-body);font-size:12.5px;font-weight:600;fill:var(--fg)}
+.s{font-family:var(--f-body);font-size:11px;fill:var(--muted)}
+.h{font-family:var(--f-body);font-size:14px;font-weight:600;fill:var(--fg)}
+.hs{font-family:var(--f-body);font-size:11.5px;fill:var(--muted)}
+.e{fill:none;stroke-width:2}
+.e-ir{stroke:var(--i-fg)}.e-std{stroke:var(--s-fg)}.e-tbc{stroke:var(--warn);stroke-dasharray:6 4}.e-opt{stroke:var(--muted);stroke-dasharray:2 4}
+.bus{fill:none;stroke:var(--s-fg);stroke-width:1.6}
+.m-ir{fill:var(--i-fg)}.m-std{fill:var(--s-fg)}.m-tbc{fill:var(--warn)}.m-opt{fill:var(--muted)}
+.bt{font-family:var(--f-mono);font-size:10px;font-weight:600;fill:var(--panel);text-anchor:middle}
+</style>
+
+<div class="wrap">
+<header>
+<h1>Fong Tat: High-Level Systems Design</h1>
+<p class="sub">The systems Fong Tat will run across its three units, how they connect, how the main processes run through them, and what we still need to confirm with the client. All components are off the shelf. Integrated Retail delivers the Oppein POS and its integrations, and supervises the rest.</p>
+<div class="meta"><span>Draft v2 · 12 Nov 2026</span><span>Due EOD 15 Nov 2026</span><span>Integrated Retail</span></div>
+<nav class="toc"><a href="#scope">Scope</a><a href="#diagram">Diagram</a><a href="#rules">Design rules</a><a href="#flows">Process flows</a><a href="#integrations">Integrations</a><a href="#systems">Systems</a><a href="#questions">Client questions</a></nav>
+</header>
+
+<section id="scope">
+<h2>Scope at a glance</h2>
+<div class="find">
+<div><b>BU 1 · Workers' dormitory</b><span>One vendor package, Aupro or iSense: dormitory management, face turnstiles, CCTV, Wi-Fi and PA. Installed fully by the vendor. IR supervises the feed into Xero.</span></div>
+<div><b>Core office</b><span>Xero for accounting across all entities, and an off-the-shelf HRMS, Great HR or Zoho HR. The building maintenance system is requested but not yet scoped.</span></div>
+<div><b>BU 3 · Oppein Home + MK Services</b><span>IR core delivery: POS on Retail Pro Prism or Cegid, with CRM and inventory inside the POS. The Oppein design system supplies the BOM. MK installation jobs run in Xero Projects.</span></div>
+</div>
+</section>
+
+<section id="diagram">
+<h2>Systems and integrations</h2>
+<div class="lg">
+<span><s class="b-v"></s>Dorm vendor package</span><span><s class="b-s"></s>Off-the-shelf SaaS</span><span><s class="b-i"></s>IR delivers</span><span><s class="b-o"></s>Supplied by Oppein</span><span><s class="b-x"></s>Outside party / not scoped</span>
+</div>
+<div class="lg">
+<span><i class="k-ir"></i>IR builds</span><span><i class="k-std"></i>Vendor or native connector</span><span><i class="k-tbc"></i>Method to confirm</span><span><i class="k-opt"></i>Optional</span>
+</div>
+<figure class="sw"><svg viewBox="0 0 1200 750" role="img" aria-label="High-level systems diagram for Fong Tat showing the dormitory vendor package, core office systems, Oppein POS and Xero, with 13 numbered integrations">
+<defs>
+<marker id="a-ir" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto-start-reverse"><path class="m-ir" d="M0,0 L10,5 L0,10 z"/></marker>
+<marker id="a-std" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto-start-reverse"><path class="m-std" d="M0,0 L10,5 L0,10 z"/></marker>
+<marker id="a-tbc" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto-start-reverse"><path class="m-tbc" d="M0,0 L10,5 L0,10 z"/></marker>
+<marker id="a-opt" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto-start-reverse"><path class="m-opt" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+<rect class="band" x="10" y="10" width="990" height="240" rx="6"/>
+<text class="h" x="24" y="34">BU 1 · Workers' dormitory</text>
+<text class="hs" x="24" y="50">Aupro or iSense · supplied and installed by the vendor</text>
+<rect class="band" x="10" y="262" width="990" height="200" rx="6"/>
+<text class="h" x="24" y="286">Core office</text>
+<text class="hs" x="24" y="302">Corporate office and cost centre</text>
+<rect class="band" x="10" y="474" width="990" height="266" rx="6"/>
+<text class="h" x="24" y="498">BU 3 · Oppein Home + MK Services</text>
+<text class="hs" x="24" y="514">IR core delivery</text>
+<rect class="band" x="1020" y="10" width="170" height="730" rx="6"/>
+<text class="h" x="1105" y="34" text-anchor="middle">Outside parties</text>
+
+<rect class="pkg" x="24" y="62" width="520" height="176" rx="6"/>
+<text class="hs" x="534" y="232" text-anchor="end">vendor package</text>
+<rect class="bx-v" x="40" y="80" width="180" height="30" rx="4"/><text class="t" x="130" y="99" text-anchor="middle">Face turnstiles ×2</text>
+<rect class="bx-v" x="40" y="116" width="180" height="30" rx="4"/><text class="t" x="130" y="135" text-anchor="middle">CCTV + NVR + gate voice</text>
+<rect class="bx-v" x="40" y="152" width="180" height="30" rx="4"/><text class="t" x="130" y="171" text-anchor="middle">Wi-Fi (MOM spec)</text>
+<rect class="bx-v" x="40" y="188" width="180" height="30" rx="4"/><text class="t" x="130" y="207" text-anchor="middle">PA system</text>
+<rect class="bx-v" x="300" y="80" width="230" height="140" rx="4"/>
+<text class="t" x="415" y="108" text-anchor="middle">Dormitory Management System</text>
+<text class="s" x="415" y="128" text-anchor="middle">beds, leases, tenants + KYC</text>
+<text class="s" x="415" y="144" text-anchor="middle">in/out log · incidents</text>
+<text class="s" x="415" y="160" text-anchor="middle">occupancy and revenue reports</text>
+<text class="s" x="415" y="176" text-anchor="middle">MOM submissions</text>
+
+<rect class="bx-s" x="300" y="312" width="230" height="62" rx="4"/>
+<text class="t" x="415" y="334" text-anchor="middle">HRMS: Great HR or Zoho HR</text>
+<text class="s" x="415" y="351" text-anchor="middle">payroll · leave · CPF · contracts · KPIs</text>
+<text class="s" x="415" y="366" text-anchor="middle">staff of all entities, incl. MK</text>
+<rect class="bx-n" x="300" y="388" width="230" height="58" rx="4"/>
+<text class="t" x="415" y="408" text-anchor="middle">Building maintenance system</text>
+<text class="s" x="415" y="424" text-anchor="middle">cleaning, lift, fire, generator roster</text>
+<text class="s" x="415" y="438" text-anchor="middle">requested · not yet scoped</text>
+<rect class="bx-s" x="590" y="290" width="220" height="160" rx="4"/>
+<text class="t" x="700" y="330" text-anchor="middle">Xero</text>
+<text class="s" x="700" y="350" text-anchor="middle">organisation per entity (to confirm)</text>
+<text class="s" x="700" y="366" text-anchor="middle">GL · AP · AR · bank reconciliation</text>
+<text class="s" x="700" y="382" text-anchor="middle">P&amp;L · balance sheet</text>
+<text class="s" x="700" y="398" text-anchor="middle">stock value from POS</text>
+<rect class="bx-n" x="850" y="380" width="140" height="66" rx="4"/>
+<text class="t" x="920" y="402" text-anchor="middle">Mgmt dashboard</text>
+<text class="s" x="920" y="418" text-anchor="middle">optional showcase</text>
+<text class="s" x="920" y="432" text-anchor="middle">Xero, DMS, POS, HRMS</text>
+
+<rect class="bx-o" x="40" y="530" width="190" height="66" rx="4"/>
+<text class="t" x="135" y="554" text-anchor="middle">Oppein design system</text>
+<text class="s" x="135" y="571" text-anchor="middle">supplied by Oppein · web</text>
+<text class="s" x="135" y="586" text-anchor="middle">final design → BOM</text>
+<rect class="bx-s" x="40" y="620" width="190" height="44" rx="4"/>
+<text class="t" x="135" y="639" text-anchor="middle">Payment terminals</text>
+<text class="s" x="135" y="655" text-anchor="middle">card · PayNow · others</text>
+<rect class="bx-i" x="300" y="530" width="230" height="190" rx="4"/>
+<text class="t" x="415" y="556" text-anchor="middle">POS: Retail Pro Prism or Cegid</text>
+<text class="s" x="415" y="580" text-anchor="middle">CRM · customers and sites</text>
+<text class="s" x="415" y="596" text-anchor="middle">quotes and sales orders</text>
+<text class="s" x="415" y="612" text-anchor="middle">inventory (stock master) · POs</text>
+<text class="s" x="415" y="628" text-anchor="middle">payments and deposits</text>
+<text class="s" x="415" y="644" text-anchor="middle">delivery scheduling</text>
+<text class="s" x="415" y="676" text-anchor="middle">6 laptop terminals</text>
+<rect class="bx-s" x="590" y="570" width="220" height="96" rx="4"/>
+<text class="t" x="700" y="596" text-anchor="middle">Xero Projects</text>
+<text class="s" x="700" y="614" text-anchor="middle">MK jobs · change orders</text>
+<text class="s" x="700" y="630" text-anchor="middle">timesheets, trips (mobile)</text>
+<text class="s" x="700" y="646" text-anchor="middle">variance vs estimate</text>
+
+<rect class="bx-x" x="1035" y="78" width="150" height="46" rx="4"/>
+<text class="t" x="1110" y="98" text-anchor="middle">MOM</text>
+<text class="s" x="1110" y="114" text-anchor="middle">Ministry of Manpower</text>
+<rect class="bx-x" x="1035" y="252" width="150" height="44" rx="4"/>
+<text class="t" x="1110" y="271" text-anchor="middle">CPF Board · IRAS</text>
+<text class="s" x="1110" y="287" text-anchor="middle">CPF · IR8A</text>
+<rect class="bx-x" x="1035" y="318" width="150" height="44" rx="4"/>
+<text class="t" x="1110" y="337" text-anchor="middle">Banks</text>
+<text class="s" x="1110" y="353" text-anchor="middle">feeds · settlements</text>
+<rect class="bx-x" x="1035" y="672" width="150" height="46" rx="4"/>
+<text class="t" x="1110" y="692" text-anchor="middle">Oppein China</text>
+<text class="s" x="1110" y="708" text-anchor="middle">supplier · POs, shipments</text>
+
+<path class="bus" d="M220,95 L250,95 M220,131 L250,131 M220,167 L250,167 M220,203 L250,203 M250,95 L250,203"/>
+<path class="e e-std" d="M250,149 L300,149" marker-end="url(#a-std)"/>
+<circle class="m-std" cx="272" cy="149" r="10"/><text class="bt" x="272" y="152.5">1</text>
+<path class="e e-tbc" d="M530,101 L1035,101" marker-end="url(#a-tbc)"/>
+<circle class="m-tbc" cx="790" cy="101" r="10"/><text class="bt" x="790" y="104.5">2</text>
+<path class="e e-tbc" d="M530,200 L700,200 L700,290" marker-end="url(#a-tbc)"/>
+<circle class="m-tbc" cx="620" cy="200" r="10"/><text class="bt" x="620" y="203.5">3</text>
+<path class="e e-tbc" d="M530,334 L590,334" marker-end="url(#a-tbc)"/>
+<circle class="m-tbc" cx="560" cy="334" r="10"/><text class="bt" x="560" y="337.5">4</text>
+<path class="e e-std" d="M415,312 L415,274 L1035,274" marker-end="url(#a-std)"/>
+<circle class="m-std" cx="480" cy="274" r="10"/><text class="bt" x="480" y="277.5">5</text>
+<path class="e e-std" d="M810,340 L1035,340" marker-end="url(#a-std)" marker-start="url(#a-std)"/>
+<circle class="m-std" cx="930" cy="340" r="10"/><text class="bt" x="930" y="343.5">6</text>
+<path class="e e-ir" d="M230,563 L300,563" marker-end="url(#a-ir)"/>
+<circle class="m-ir" cx="265" cy="563" r="10"/><text class="bt" x="265" y="566.5">7</text>
+<path class="e e-std" d="M230,642 L300,642" marker-end="url(#a-std)" marker-start="url(#a-std)"/>
+<circle class="m-std" cx="265" cy="642" r="10"/><text class="bt" x="265" y="645.5">8</text>
+<path class="e e-ir" d="M530,545 L640,545 L640,450" marker-end="url(#a-ir)"/>
+<circle class="m-ir" cx="585" cy="545" r="10"/><text class="bt" x="585" y="548.5">9</text>
+<path class="e e-ir" d="M530,618 L590,618" marker-end="url(#a-ir)"/>
+<circle class="m-ir" cx="560" cy="618" r="10"/><text class="bt" x="560" y="621.5">10</text>
+<path class="e e-std" d="M760,570 L760,450" marker-end="url(#a-std)"/>
+<circle class="m-std" cx="760" cy="510" r="10"/><text class="bt" x="760" y="513.5">11</text>
+<path class="e e-tbc" d="M530,695 L1035,695" marker-end="url(#a-tbc)" marker-start="url(#a-tbc)"/>
+<circle class="m-tbc" cx="790" cy="695" r="10"/><text class="bt" x="790" y="698.5">12</text>
+<path class="e e-opt" d="M810,413 L850,413" marker-end="url(#a-opt)"/>
+<circle class="m-opt" cx="830" cy="413" r="10"/><text class="bt" x="830" y="416.5">13</text>
+</svg></figure>
+<p class="note">Integration 10 is one-way: the POS creates the MK job in Xero Projects, and change orders are billed from Xero. A middleware layer with a reporting database can be added in a later phase if volumes or reporting needs grow.</p>
+</section>
+
+<section id="rules">
+<h2>Design rules</h2>
+<div class="rules">
+<div class="rule"><b>Off the shelf only</b><span>No core transaction system is built. IR configures, integrates and supervises.</span></div>
+<div class="rule"><b>POS is the stock master</b><span>Stock quantities live in the POS. Xero receives stock value and cost of sales only, so stock is never kept in two places.</span></div>
+<div class="rule"><b>One billing rule for Oppein customers</b><span>Deposits, sales invoices and final payments come from the POS. Change orders are invoiced from Xero against the same project. To confirm with <a href="#q24">Q24</a> and <a href="#q29">Q29</a>.</span></div>
+<div class="rule"><b>One project ID</b><span>Created once in the POS when the order is confirmed and reused in Xero Projects and on every invoice.</span></div>
+<div class="rule"><b>Biometric and KYC data stay with the vendor</b><span>Face templates and worker KYC stay in the dormitory system. Only occupancy and invoice data leave it, in line with PDPC guidance.</span></div>
+<div class="rule"><b>Separate logins and dashboards</b><span>There is no single sign-on. Each system keeps its own users, roles and dashboard. A consolidated dashboard is optional.</span></div>
+</div>
+</section>
+
+<section id="flows">
+<h2>Process flows</h2>
+<div class="lg"><span>Each step shows the system that runs it, the integration it uses (I#) and any client question it depends on (Q#). A dashed step happens only when needed or is not yet scoped.</span></div>
+
+<div class="flow">
+<div class="flow-h"><b>BU 1 · Worker move-in to monthly billing</b><span>Dormitory system and Xero</span></div>
+<ol class="steps">
+<li><span class="sn">01</span><span class="stt">Bed booking</span><span class="sd">Employer requests beds and the period.</span><span class="chips"><span class="c c-v">DMS</span><a class="c c-q" href="#q9">Q9</a></span></li>
+<li><span class="sn">02</span><span class="stt">Worker KYC</span><span class="sd">Work permit, passport and employer details.</span><span class="chips"><span class="c c-v">DMS</span><a class="c c-q" href="#q12">Q12</a></span></li>
+<li><span class="sn">03</span><span class="stt">Bed allocation and tenancy</span><span class="sd">Assign the bed and issue the tenancy agreement.</span><span class="chips"><span class="c c-v">DMS</span></span></li>
+<li><span class="sn">04</span><span class="stt">Face enrolment</span><span class="sd">Register the worker on the turnstiles.</span><span class="chips"><span class="c c-v">Turnstiles</span><span class="c c-int">I1</span><a class="c c-q" href="#q12">Q12</a></span></li>
+<li><span class="sn">05</span><span class="stt">Monthly rent invoice</span><span class="sd">Raised per bed or per employer and sent to Xero.</span><span class="chips"><span class="c c-v">DMS</span><span class="c c-s">Xero</span><span class="c c-int">I3</span><a class="c c-q" href="#q9">Q9</a><a class="c c-q" href="#q10">Q10</a></span></li>
+<li><span class="sn">06</span><span class="stt">Payment and reconciliation</span><span class="sd">Receipt from the bank feed matched to the invoice.</span><span class="chips"><span class="c c-s">Xero</span><span class="c c-int">I6</span></span></li>
+<li><span class="sn">07</span><span class="stt">Move-out</span><span class="sd">Revoke access, delete face data, refund deposit, free the bed.</span><span class="chips"><span class="c c-v">DMS</span><span class="c c-s">Xero</span><a class="c c-q" href="#q12">Q12</a></span></li>
+</ol>
+</div>
+
+<div class="flow">
+<div class="flow-h"><b>BU 1 · Daily operations and MOM compliance</b><span>Dormitory vendor package</span></div>
+<ol class="steps">
+<li><span class="sn">01</span><span class="stt">Turnstile entry and exit</span><span class="sd">Face recognition logs every movement.</span><span class="chips"><span class="c c-v">Turnstiles</span><span class="c c-int">I1</span></span></li>
+<li><span class="sn">02</span><span class="stt">CCTV and gate recording</span><span class="sd">24/7 video in common areas, with audio at the security box.</span><span class="chips"><span class="c c-v">CCTV + NVR</span></span></li>
+<li><span class="sn">03</span><span class="stt">Live occupancy</span><span class="sd">Count of workers inside and outside, per floor.</span><span class="chips"><span class="c c-v">DMS</span></span></li>
+<li class="alt"><span class="sn">04</span><span class="stt">Incident</span><span class="sd">Logged with a reference to the CCTV clip.</span><span class="chips"><span class="c c-v">DMS</span><a class="c c-q" href="#q11">Q11</a></span></li>
+<li><span class="sn">05</span><span class="stt">Statutory report</span><span class="sd">Headcount, in/out and incidents submitted to MOM.</span><span class="chips"><span class="c c-v">DMS</span><span class="c c-int">I2</span><a class="c c-q" href="#q11">Q11</a></span></li>
+<li class="alt"><span class="sn">06</span><span class="stt">Maintenance roster</span><span class="sd">Lift, fire equipment, generator, cleaning. Not yet scoped.</span><span class="chips"><span class="c c-m">To be selected</span><a class="c c-q" href="#q14">Q14</a></span></li>
+</ol>
+</div>
+
+<div class="flow">
+<div class="flow-h"><b>BU 3 · Oppein sale to installation</b><span>Oppein design, POS, Xero Projects and Xero</span></div>
+<ol class="steps">
+<li><span class="sn">01</span><span class="stt">Walk-in</span><span class="sd">Register the customer and site address.</span><span class="chips"><span class="c c-i">POS · CRM</span></span></li>
+<li><span class="sn">02</span><span class="stt">Consultation and site measure</span><span class="sd">Needs, budget and site dimensions.</span><span class="chips"><span class="c c-m">Manual</span></span></li>
+<li><span class="sn">03</span><span class="stt">Design iterations</span><span class="sd">Drawings and mock-ups, versioned.</span><span class="chips"><span class="c c-o">Oppein design</span></span></li>
+<li><span class="sn">04</span><span class="stt">Final design → BOM</span><span class="sd">BOM line items sent to the POS on customer approval.</span><span class="chips"><span class="c c-o">Oppein design</span><span class="c c-i">POS</span><span class="c c-int">I7</span><a class="c c-q" href="#q19">Q19</a><a class="c c-q" href="#q20">Q20</a></span></li>
+<li><span class="sn">05</span><span class="stt">Complete the quote</span><span class="sd">Add local items, substitute unavailable items.</span><span class="chips"><span class="c c-i">POS</span><a class="c c-q" href="#q21">Q21</a><a class="c c-q" href="#q22">Q22</a></span></li>
+<li><span class="sn">06</span><span class="stt">Order and deposit</span><span class="sd">Customer accepts the quote and pays the deposit.</span><span class="chips"><span class="c c-i">POS</span><span class="c c-int">I8</span><span class="c c-int">I9</span><a class="c c-q" href="#q23">Q23</a></span></li>
+<li><span class="sn">07</span><span class="stt">Stock check and purchase</span><span class="sd">Reserve stock, or raise a PO to Oppein China.</span><span class="chips"><span class="c c-i">POS</span><span class="c c-int">I12</span><a class="c c-q" href="#q25">Q25</a><a class="c c-q" href="#q26">Q26</a></span></li>
+<li><span class="sn">08</span><span class="stt">Goods receipt</span><span class="sd">Receive, tag and label the goods.</span><span class="chips"><span class="c c-i">POS</span></span></li>
+<li><span class="sn">09</span><span class="stt">Schedule installation</span><span class="sd">Agree the slot; the MK job is created in Xero Projects.</span><span class="chips"><span class="c c-i">POS</span><span class="c c-s">Xero Projects</span><span class="c c-int">I10</span><a class="c c-q" href="#q27">Q27</a><a class="c c-q" href="#q28">Q28</a></span></li>
+<li><span class="sn">10</span><span class="stt">On-site installation</span><span class="sd">MK crew installs and logs time, trips and materials on mobile.</span><span class="chips"><span class="c c-s">Xero Projects</span><a class="c c-q" href="#q30">Q30</a></span></li>
+<li class="alt"><span class="sn">11</span><span class="stt">Change order</span><span class="sd">If the site differs: revised BOM, labour or trips, approved by the customer, invoiced from Xero.</span><span class="chips"><span class="c c-s">Xero Projects</span><span class="c c-s">Xero</span><a class="c c-q" href="#q29">Q29</a></span></li>
+<li><span class="sn">12</span><span class="stt">Final bill and payment</span><span class="sd">Balance collected on handover.</span><span class="chips"><span class="c c-i">POS</span><span class="c c-int">I9</span><a class="c c-q" href="#q24">Q24</a></span></li>
+<li><span class="sn">13</span><span class="stt">Job close</span><span class="sd">Actuals vs estimate; costs and variances posted.</span><span class="chips"><span class="c c-s">Xero Projects</span><span class="c c-s">Xero</span><span class="c c-int">I11</span></span></li>
+</ol>
+</div>
+
+<div class="flow">
+<div class="flow-h"><b>Core office · Month-end close and reporting</b><span>Everything closes in Xero</span></div>
+<ol class="steps">
+<li><span class="sn">01</span><span class="stt">Dorm revenue</span><span class="sd">Already in Xero from the dormitory system.</span><span class="chips"><span class="c c-s">Xero</span><span class="c c-int">I3</span><a class="c c-q" href="#q10">Q10</a></span></li>
+<li><span class="sn">02</span><span class="stt">Oppein sales and stock value</span><span class="sd">Already in Xero from the POS.</span><span class="chips"><span class="c c-s">Xero</span><span class="c c-int">I9</span></span></li>
+<li><span class="sn">03</span><span class="stt">Payroll journals</span><span class="sd">Posted per entity, incl. CPF.</span><span class="chips"><span class="c c-s">HRMS</span><span class="c c-s">Xero</span><span class="c c-int">I4</span></span></li>
+<li><span class="sn">04</span><span class="stt">MK project costs</span><span class="sd">Actuals and variances from Xero Projects.</span><span class="chips"><span class="c c-s">Xero</span><span class="c c-int">I11</span></span></li>
+<li><span class="sn">05</span><span class="stt">Bank reconciliation</span><span class="sd">Bank feeds, card and PayNow settlements.</span><span class="chips"><span class="c c-s">Xero</span><span class="c c-int">I6</span></span></li>
+<li><span class="sn">06</span><span class="stt">Allocations and intercompany</span><span class="sd">Core office costs; MK installation charged to Oppein.</span><span class="chips"><span class="c c-s">Xero</span><a class="c c-q" href="#q1">Q1</a><a class="c c-q" href="#q2">Q2</a></span></li>
+<li><span class="sn">07</span><span class="stt">Entity and group reports</span><span class="sd">P&amp;L, balance sheet, cost analysis.</span><span class="chips"><span class="c c-s">Xero</span><a class="c c-q" href="#q1">Q1</a></span></li>
+<li class="alt"><span class="sn">08</span><span class="stt">Management reporting</span><span class="sd">Each system's dashboard; consolidated view optional.</span><span class="chips"><span class="c c-m">Dashboards</span><span class="c c-int">I13</span><a class="c c-q" href="#q5">Q5</a></span></li>
+</ol>
+</div>
+
+<div class="flow">
+<div class="flow-h"><b>Core office · Hire to pay</b><span>HRMS and Xero</span></div>
+<ol class="steps">
+<li><span class="sn">01</span><span class="stt">Hire and contract</span><span class="sd">Employee record and employment contract.</span><span class="chips"><span class="c c-s">HRMS</span><a class="c c-q" href="#q15">Q15</a></span></li>
+<li><span class="sn">02</span><span class="stt">Leave and attendance</span><span class="sd">Medical, annual, unpaid, hospitalisation, maternity.</span><span class="chips"><span class="c c-s">HRMS</span><a class="c c-q" href="#q17">Q17</a></span></li>
+<li><span class="sn">03</span><span class="stt">Monthly payroll</span><span class="sd">Incl. CPF and SINDA/CDAC contributions.</span><span class="chips"><span class="c c-s">HRMS</span><a class="c c-q" href="#q16">Q16</a></span></li>
+<li><span class="sn">04</span><span class="stt">Statutory submission</span><span class="sd">CPF monthly, IR8A annually.</span><span class="chips"><span class="c c-s">HRMS</span><span class="c c-int">I5</span></span></li>
+<li><span class="sn">05</span><span class="stt">Post to Xero</span><span class="sd">Payroll journal per entity.</span><span class="chips"><span class="c c-s">HRMS</span><span class="c c-s">Xero</span><span class="c c-int">I4</span></span></li>
+<li><span class="sn">06</span><span class="stt">KPIs and reviews</span><span class="sd">Targets, manager reviews, history.</span><span class="chips"><span class="c c-s">HRMS</span><a class="c c-q" href="#q17">Q17</a></span></li>
+<li><span class="sn">07</span><span class="stt">System access</span><span class="sd">Grant and revoke access in each system.</span><span class="chips"><span class="c c-m">Manual</span><a class="c c-q" href="#q18">Q18</a></span></li>
+</ol>
+</div>
+</section>
+
+<section id="integrations">
+<h2>Integration register</h2>
+<div class="tw"><table>
+<thead><tr><th>#</th><th>From → To</th><th>Data</th><th>Trigger</th><th>Built by</th><th>Open point</th><th>Qs</th></tr></thead>
+<tbody>
+<tr><td><span class="idn d-std">I1</span></td><td>Turnstiles, CCTV, Wi-Fi, PA → DMS</td><td>Face match events, in/out, alarms, clip references</td><td>Real time</td><td><span class="st st-std">Vendor</span></td><td>Inside the vendor package. Face templates stay in the vendor system.</td><td><a href="#q12">Q12</a></td></tr>
+<tr><td><span class="idn d-tbc">I2</span></td><td>DMS → MOM</td><td>Headcount in/out, nominal roll, incident reports</td><td>Periodic and per incident</td><td><span class="st st-std">Vendor</span></td><td>Does the DMS submit directly, or do staff upload?</td><td><a href="#q11">Q11</a></td></tr>
+<tr><td><span class="idn d-tbc">I3</span></td><td>DMS → Xero (dorm entity)</td><td>Rent invoices, deposits, payments received</td><td>Monthly or per invoice</td><td><span class="st st-tbc">Vendor push, IR supervises</span></td><td>Method unknown: native connector, API or file. Does the DMS do billing at all?</td><td><a href="#q9">Q9</a> <a href="#q10">Q10</a></td></tr>
+<tr><td><span class="idn d-tbc">I4</span></td><td>HRMS → Xero</td><td>Pay-run journal, CPF and SINDA/CDAC liabilities</td><td>Monthly per entity</td><td><span class="st st-tbc">Native connector</span></td><td>Check the Xero connector of the HRMS chosen.</td><td><a href="#q15">Q15</a></td></tr>
+<tr><td><span class="idn d-std">I5</span></td><td>HRMS → CPF Board, IRAS</td><td>CPF contributions, IR8A</td><td>Monthly, annual</td><td><span class="st st-std">Native</span></td><td>Standard Singapore payroll feature.</td><td><a href="#q16">Q16</a></td></tr>
+<tr><td><span class="idn d-std">I6</span></td><td>Banks ↔ Xero</td><td>Bank feeds, payments, card and PayNow settlements</td><td>Daily</td><td><span class="st st-std">Native</span></td><td>None.</td><td></td></tr>
+<tr><td><span class="idn d-ir">I7</span></td><td>Oppein design → POS</td><td>Final design BOM as line items (SKU, qty), design reference</td><td>When the design is final</td><td><span class="st st-ir">IR</span></td><td>Needs the export format from Oppein and SKU mapping (about 1,800 stocked of 10,000).</td><td><a href="#q19">Q19</a> <a href="#q20">Q20</a></td></tr>
+<tr><td><span class="idn d-std">I8</span></td><td>Payment terminals ↔ POS</td><td>Payment requests and results</td><td>Per payment</td><td><span class="st st-std">POS standard</span></td><td>Confirm payment methods and provider.</td><td><a href="#q23">Q23</a></td></tr>
+<tr><td><span class="idn d-ir">I9</span></td><td>POS → Xero</td><td>Customers, sales invoices, deposits, payments, supplier bills, stock value</td><td>Per transaction or daily</td><td><span class="st st-ir">IR</span></td><td>Deposit, progress and final invoices post separately.</td><td><a href="#q23">Q23</a> <a href="#q24">Q24</a></td></tr>
+<tr><td><span class="idn d-ir">I10</span></td><td>POS → Xero Projects (one-way)</td><td>Project ID, customer, site, order value, BOM estimate</td><td>When the installation is scheduled</td><td><span class="st st-ir">IR</span></td><td>Full BOM or order value only.</td><td><a href="#q28">Q28</a></td></tr>
+<tr><td><span class="idn d-std">I11</span></td><td>Xero Projects → Xero GL</td><td>Change orders, MK labour, trips, consumables, variances</td><td>Ongoing</td><td><span class="st st-std">Native</span></td><td>MK crews use the Xero mobile app.</td><td><a href="#q29">Q29</a> <a href="#q30">Q30</a></td></tr>
+<tr><td><span class="idn d-tbc">I12</span></td><td>POS ↔ Oppein China</td><td>POs out; shipment notices and goods receipt in</td><td>Per order and shipment</td><td><span class="st st-tbc">Manual or file</span></td><td>How does Oppein China receive POs and confirm shipments?</td><td><a href="#q25">Q25</a></td></tr>
+<tr><td><span class="idn d-opt">I13</span></td><td>Xero, DMS, POS, HRMS → management dashboard</td><td>Revenue, cost, occupancy, sales, headcount by unit</td><td>Daily</td><td><span class="st st-tbc">Optional</span></td><td>Only if the client wants one consolidated view.</td><td><a href="#q5">Q5</a></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="systems">
+<h2>System list</h2>
+<div class="tw"><table>
+<thead><tr><th>Unit</th><th>Capability</th><th>System (options)</th><th>Supplied by</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>BU 1 Dormitory</td><td>Dorm management, turnstiles, CCTV, Wi-Fi, PA</td><td>Aupro or iSense</td><td>Vendor, installed end to end</td><td>Aupro runs on-prem or on AWS; iSense is hosted on Alibaba Cloud. IR supports under the maintenance agreement.</td></tr>
+<tr><td>Core office</td><td>Accounting, all entities</td><td>Xero</td><td>SaaS, client subscription</td><td>One organisation per entity or tracking categories: to confirm.</td></tr>
+<tr><td>Core office</td><td>HR, payroll, leave, KPIs</td><td>Great HR or Zoho HR</td><td>SaaS, client subscription</td><td>Covers MK staff as well.</td></tr>
+<tr><td>Core office</td><td>Building maintenance roster</td><td>To be selected</td><td>Third party</td><td>Not in current scope; quoted separately.</td></tr>
+<tr><td>BU 3 Oppein</td><td>POS, CRM, quotes, inventory, payments</td><td>Retail Pro Prism or Cegid</td><td>IR</td><td>6 POS laptops. CRM and inventory inside the POS.</td></tr>
+<tr><td>BU 3 Oppein</td><td>Design and BOM</td><td>Oppein design system</td><td>Oppein (franchisor)</td><td>Ready to use; no development.</td></tr>
+<tr><td>BU 3 MK</td><td>Jobs, change orders, timesheets</td><td>Xero Projects</td><td>SaaS, client subscription</td><td>Per-user mobile licence for MK crews.</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="questions">
+<h2>Questions for the client</h2>
+<p class="note"><span class="blk">Blocks design</span> marks questions whose answer changes the design or an integration. The Q numbers match the tags in the process flows. Please record answers in the <a href="https://docs.google.com/spreadsheets/d/1PYPsXAB2DvhTFyzhw4e6ihrPGZLmhRvg_XoH-f1v7qA/edit">Client Questions v2</a> sheet.</p>
+<div class="qgrid">
+
+<div class="qcard"><h3>General and finance</h3><ol class="q">
+<li id="q1"><code>Q1</code><span>Is Xero already live? How many legal entities are there, and should each have its own Xero organisation, or one organisation with tracking categories?<span class="blk">Blocks design</span></span></li>
+<li id="q2"><code>Q2</code><span>How should core office costs be allocated to the units? Which charges flow between entities (dorm rent, MK installation, shared costs)?</span></li>
+<li id="q3"><code>Q3</code><span>What is the target go-live for each unit? Can the units go live in phases?</span></li>
+<li id="q4"><code>Q4</code><span>Who is the decision owner and day-to-day contact for each unit?</span></li>
+<li id="q5"><code>Q5</code><span>Each system has its own dashboard. Which 5 to 10 numbers must management see, and is one consolidated view needed?</span></li>
+<li id="q6"><code>Q6</code><span>Who will own the cloud accounts and admin logins for each system?</span></li>
+<li id="q7"><code>Q7</code><span>Are there existing systems or spreadsheets to migrate: tenants, staff, customers, stock, opening balances?</span></li>
+</ol></div>
+
+<div class="qcard"><h3>BU 1 · Dormitory</h3><ol class="q">
+<li id="q8"><code>Q8</code><span>When will you choose between Aupro and iSense, and on what criteria?<span class="blk">Blocks design</span></span></li>
+<li id="q9"><code>Q9</code><span>Who is billed for a bed: the employer, the worker, or both? What is the billing cycle, and how are deposits, utilities and part-months handled?<span class="blk">Blocks design</span></span></li>
+<li id="q10"><code>Q10</code><span>Should the dormitory system issue the invoices, or only send occupancy to Xero? How can it send data to Xero: API, webhook or file?<span class="blk">Blocks design</span></span></li>
+<li id="q11"><code>Q11</code><span>Which MOM reports are required and how often? How do you submit them today, and should the vendor system submit directly?</span></li>
+<li id="q12"><code>Q12</code><span>Walk us through check-in and check-out: who does KYC, and when is the face scan enrolled and deleted?</span></li>
+<li id="q13"><code>Q13</code><span>Please confirm the bed count and floors: 450 beds over three floors, or two?</span></li>
+<li id="q14"><code>Q14</code><span>Should the building maintenance system cover the whole building? Should we quote it now or later?</span></li>
+</ol></div>
+
+<div class="qcard"><h3>Core office · HR</h3><ol class="q">
+<li id="q15"><code>Q15</code><span>Do you prefer Great HR or Zoho HR? How many staff are in each entity, including MK?</span></li>
+<li id="q16"><code>Q16</code><span>Does each entity run its own payroll and CPF submission?</span></li>
+<li id="q17"><code>Q17</code><span>Which leave types and approval steps do you use, and how often are KPIs reviewed?</span></li>
+<li id="q18"><code>Q18</code><span>Who needs access to which system, and who approves access? Is a separate login per system acceptable?</span></li>
+</ol></div>
+
+<div class="qcard"><h3>BU 3 · Oppein Home and MK</h3><ol class="q">
+<li id="q19"><code>Q19</code><span>Can the Oppein design system export or send the BOM as line items (API, file, email)? Who at Oppein can share the format?<span class="blk">Blocks design</span></span></li>
+<li id="q20"><code>Q20</code><span>You will stock about 1,800 of Oppein's 10,000 SKUs. Which list is the master, and do the item codes match between the design and the POS?<span class="blk">Blocks design</span></span></li>
+<li id="q21"><code>Q21</code><span>Local items not in the design (screws, cement, tiles): who adds them to the order, and at which step?</span></li>
+<li id="q22"><code>Q22</code><span>If a designed item is not available, who chooses the substitute, and must the customer approve a revised quote?</span></li>
+<li id="q23"><code>Q23</code><span>What are the payment terms (deposit, progress, final), and which payment methods do you accept?</span></li>
+<li id="q24"><code>Q24</code><span>Is the final payment on site collected through the POS terminal, or by a Xero invoice with a payment link?</span></li>
+<li id="q25"><code>Q25</code><span>How do you order from Oppein China, how do they confirm shipments, and in which currency? How should freight and duty be added to stock cost?</span></li>
+<li id="q26"><code>Q26</code><span>Is stock reserved for each customer order, or held as general stock?</span></li>
+<li id="q27"><code>Q27</code><span>Is installation scheduled in the POS or in a separate calendar? What are the slot rules?</span></li>
+<li id="q28"><code>Q28</code><span>Should a confirmed order create the MK job in Xero Projects automatically, and with the full BOM or only the order value?<span class="blk">Blocks design</span></span></li>
+<li id="q29"><code>Q29</code><span>Who approves on-site change orders, and how does the customer sign off? Can change orders be invoiced from Xero rather than the POS?</span></li>
+<li id="q30"><code>Q30</code><span>How many MK crews are there? Are they employees or subcontractors, and how are man-day rates, trips and consumables recorded?</span></li>
+<li id="q31"><code>Q31</code><span>How many showrooms and warehouses are there? Are all 6 POS laptops at one site?</span></li>
+<li id="q32"><code>Q32</code><span>How do you handle warranty claims, complaints and returns?</span></li>
+</ol></div>
+
+</div>
+</section>
+
+<p class="note">Sources: Fong Tat brief (10 Nov 2026), internal briefing call, team review of the architecture options draft.</p>
+</div>
+
+</body></html>
