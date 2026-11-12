@@ -69,8 +69,9 @@ tr:last-child td{border-bottom:0}
 .flow-h{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
 .flow-h b{font-size:15.5px}
 .flow-h span{font-size:13px;color:var(--muted)}
-ol.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:10px}
-ol.steps li{border:1px solid var(--line);border-radius:5px;padding:10px 11px;display:flex;flex-direction:column;gap:5px;min-width:0;background:var(--bg)}
+ol.steps{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:14px 30px}
+ol.steps li{flex:0 0 176px;position:relative;border:1px solid var(--line);border-radius:5px;padding:10px 11px;display:flex;flex-direction:column;gap:5px;min-width:0;background:var(--bg)}
+ol.steps li:not(:last-child)::after{content:"\2192";position:absolute;right:-24px;top:50%;transform:translateY(-50%);font-size:18px;line-height:1;color:var(--muted)}
 ol.steps li.alt{border-style:dashed}
 .sn{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
 .stt{font-weight:600;font-size:13.5px;line-height:1.3}
@@ -120,7 +121,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 <h1>Fong Tat: High-Level Systems Design</h1>
 <p class="sub">The systems Fong Tat will run across its three units, how they connect, how the main processes run through them, and what we still need to confirm with the client. All components are off the shelf. Integrated Retail delivers the Oppein POS and its integrations, and supervises the rest.</p>
 <div class="meta"><span>Draft v2 · 12 Nov 2026</span><span>Due EOD 15 Nov 2026</span><span>Integrated Retail</span></div>
-<nav class="toc"><a href="#scope">Scope</a><a href="#diagram">Diagram</a><a href="#rules">Design rules</a><a href="#flows">Process flows</a><a href="#integrations">Integrations</a><a href="#systems">Systems</a><a href="#questions">Client questions</a></nav>
+<nav class="toc"><a href="#scope">Scope</a><a href="#diagram">Diagram</a><a href="#rules">Design rules</a><a href="#flows">Process flows</a><a href="#integrations">Integrations</a><a href="#systems">Systems</a><a href="https://docs.google.com/spreadsheets/d/1PYPsXAB2DvhTFyzhw4e6ihrPGZLmhRvg_XoH-f1v7qA/edit">Client questions (Google Sheet)</a></nav>
 </header>
 
 <section id="scope">
@@ -261,7 +262,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 <div class="rules">
 <div class="rule"><b>Off the shelf only</b><span>No core transaction system is built. IR configures, integrates and supervises.</span></div>
 <div class="rule"><b>POS is the stock master</b><span>Stock quantities live in the POS. Xero receives stock value and cost of sales only, so stock is never kept in two places.</span></div>
-<div class="rule"><b>One billing rule for Oppein customers</b><span>Deposits, sales invoices and final payments come from the POS. Change orders are invoiced from Xero against the same project. To confirm with <a href="#q24">Q24</a> and <a href="#q29">Q29</a>.</span></div>
+<div class="rule"><b>One billing rule for Oppein customers</b><span>Deposits, sales invoices and final payments come from the POS. Change orders are invoiced from Xero against the same project. To confirm with the client.</span></div>
 <div class="rule"><b>One project ID</b><span>Created once in the POS when the order is confirmed and reused in Xero Projects and on every invoice.</span></div>
 <div class="rule"><b>Biometric and KYC data stay with the vendor</b><span>Face templates and worker KYC stay in the dormitory system. Only occupancy and invoice data leave it, in line with PDPC guidance.</span></div>
 <div class="rule"><b>Separate logins and dashboards</b><span>There is no single sign-on. Each system keeps its own users, roles and dashboard. A consolidated dashboard is optional.</span></div>
@@ -270,18 +271,18 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 
 <section id="flows">
 <h2>Process flows</h2>
-<div class="lg"><span>Each step shows the system that runs it, the integration it uses (I#) and any client question it depends on (Q#). A dashed step happens only when needed or is not yet scoped.</span></div>
+<div class="lg"><span>Each step shows the system that runs it and the integration it uses (I#). A dashed step happens only when needed or is not yet scoped.</span></div>
 
 <div class="flow">
 <div class="flow-h"><b>BU 1 · Worker move-in to monthly billing</b><span>Dormitory system and Xero</span></div>
 <ol class="steps">
-<li><span class="sn">01</span><span class="stt">Bed booking</span><span class="sd">Employer requests beds and the period.</span><span class="chips"><span class="c c-v">DMS</span><a class="c c-q" href="#q9">Q9</a></span></li>
-<li><span class="sn">02</span><span class="stt">Worker KYC</span><span class="sd">Work permit, passport and employer details.</span><span class="chips"><span class="c c-v">DMS</span><a class="c c-q" href="#q12">Q12</a></span></li>
+<li><span class="sn">01</span><span class="stt">Bed booking</span><span class="sd">Employer requests beds and the period.</span><span class="chips"><span class="c c-v">DMS</span></span></li>
+<li><span class="sn">02</span><span class="stt">Worker KYC</span><span class="sd">Work permit, passport and employer details.</span><span class="chips"><span class="c c-v">DMS</span></span></li>
 <li><span class="sn">03</span><span class="stt">Bed allocation and tenancy</span><span class="sd">Assign the bed and issue the tenancy agreement.</span><span class="chips"><span class="c c-v">DMS</span></span></li>
-<li><span class="sn">04</span><span class="stt">Face enrolment</span><span class="sd">Register the worker on the turnstiles.</span><span class="chips"><span class="c c-v">Turnstiles</span><span class="c c-int">I1</span><a class="c c-q" href="#q12">Q12</a></span></li>
-<li><span class="sn">05</span><span class="stt">Monthly rent invoice</span><span class="sd">Raised per bed or per employer and sent to Xero.</span><span class="chips"><span class="c c-v">DMS</span><span class="c c-s">Xero</span><span class="c c-int">I3</span><a class="c c-q" href="#q9">Q9</a><a class="c c-q" href="#q10">Q10</a></span></li>
+<li><span class="sn">04</span><span class="stt">Face enrolment</span><span class="sd">Register the worker on the turnstiles.</span><span class="chips"><span class="c c-v">Turnstiles</span><span class="c c-int">I1</span></span></li>
+<li><span class="sn">05</span><span class="stt">Monthly rent invoice</span><span class="sd">Raised per bed or per employer and sent to Xero.</span><span class="chips"><span class="c c-v">DMS</span><span class="c c-s">Xero</span><span class="c c-int">I3</span></span></li>
 <li><span class="sn">06</span><span class="stt">Payment and reconciliation</span><span class="sd">Receipt from the bank feed matched to the invoice.</span><span class="chips"><span class="c c-s">Xero</span><span class="c c-int">I6</span></span></li>
-<li><span class="sn">07</span><span class="stt">Move-out</span><span class="sd">Revoke access, delete face data, refund deposit, free the bed.</span><span class="chips"><span class="c c-v">DMS</span><span class="c c-s">Xero</span><a class="c c-q" href="#q12">Q12</a></span></li>
+<li><span class="sn">07</span><span class="stt">Move-out</span><span class="sd">Revoke access, delete face data, refund deposit, free the bed.</span><span class="chips"><span class="c c-v">DMS</span><span class="c c-s">Xero</span></span></li>
 </ol>
 </div>
 
@@ -291,9 +292,9 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 <li><span class="sn">01</span><span class="stt">Turnstile entry and exit</span><span class="sd">Face recognition logs every movement.</span><span class="chips"><span class="c c-v">Turnstiles</span><span class="c c-int">I1</span></span></li>
 <li><span class="sn">02</span><span class="stt">CCTV and gate recording</span><span class="sd">24/7 video in common areas, with audio at the security box.</span><span class="chips"><span class="c c-v">CCTV + NVR</span></span></li>
 <li><span class="sn">03</span><span class="stt">Live occupancy</span><span class="sd">Count of workers inside and outside, per floor.</span><span class="chips"><span class="c c-v">DMS</span></span></li>
-<li class="alt"><span class="sn">04</span><span class="stt">Incident</span><span class="sd">Logged with a reference to the CCTV clip.</span><span class="chips"><span class="c c-v">DMS</span><a class="c c-q" href="#q11">Q11</a></span></li>
-<li><span class="sn">05</span><span class="stt">Statutory report</span><span class="sd">Headcount, in/out and incidents submitted to MOM.</span><span class="chips"><span class="c c-v">DMS</span><span class="c c-int">I2</span><a class="c c-q" href="#q11">Q11</a></span></li>
-<li class="alt"><span class="sn">06</span><span class="stt">Maintenance roster</span><span class="sd">Lift, fire equipment, generator, cleaning. Not yet scoped.</span><span class="chips"><span class="c c-m">To be selected</span><a class="c c-q" href="#q14">Q14</a></span></li>
+<li class="alt"><span class="sn">04</span><span class="stt">Incident</span><span class="sd">Logged with a reference to the CCTV clip.</span><span class="chips"><span class="c c-v">DMS</span></span></li>
+<li><span class="sn">05</span><span class="stt">Statutory report</span><span class="sd">Headcount, in/out and incidents submitted to MOM.</span><span class="chips"><span class="c c-v">DMS</span><span class="c c-int">I2</span></span></li>
+<li class="alt"><span class="sn">06</span><span class="stt">Maintenance roster</span><span class="sd">Lift, fire equipment, generator, cleaning. Not yet scoped.</span><span class="chips"><span class="c c-m">To be selected</span></span></li>
 </ol>
 </div>
 
@@ -303,15 +304,15 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 <li><span class="sn">01</span><span class="stt">Walk-in</span><span class="sd">Register the customer and site address.</span><span class="chips"><span class="c c-i">POS · CRM</span></span></li>
 <li><span class="sn">02</span><span class="stt">Consultation and site measure</span><span class="sd">Needs, budget and site dimensions.</span><span class="chips"><span class="c c-m">Manual</span></span></li>
 <li><span class="sn">03</span><span class="stt">Design iterations</span><span class="sd">Drawings and mock-ups, versioned.</span><span class="chips"><span class="c c-o">Oppein design</span></span></li>
-<li><span class="sn">04</span><span class="stt">Final design → BOM</span><span class="sd">BOM line items sent to the POS on customer approval.</span><span class="chips"><span class="c c-o">Oppein design</span><span class="c c-i">POS</span><span class="c c-int">I7</span><a class="c c-q" href="#q19">Q19</a><a class="c c-q" href="#q20">Q20</a></span></li>
-<li><span class="sn">05</span><span class="stt">Complete the quote</span><span class="sd">Add local items, substitute unavailable items.</span><span class="chips"><span class="c c-i">POS</span><a class="c c-q" href="#q21">Q21</a><a class="c c-q" href="#q22">Q22</a></span></li>
-<li><span class="sn">06</span><span class="stt">Order and deposit</span><span class="sd">Customer accepts the quote and pays the deposit.</span><span class="chips"><span class="c c-i">POS</span><span class="c c-int">I8</span><span class="c c-int">I9</span><a class="c c-q" href="#q23">Q23</a></span></li>
-<li><span class="sn">07</span><span class="stt">Stock check and purchase</span><span class="sd">Reserve stock, or raise a PO to Oppein China.</span><span class="chips"><span class="c c-i">POS</span><span class="c c-int">I12</span><a class="c c-q" href="#q25">Q25</a><a class="c c-q" href="#q26">Q26</a></span></li>
+<li><span class="sn">04</span><span class="stt">Final design → BOM</span><span class="sd">BOM line items sent to the POS on customer approval.</span><span class="chips"><span class="c c-o">Oppein design</span><span class="c c-i">POS</span><span class="c c-int">I7</span></span></li>
+<li><span class="sn">05</span><span class="stt">Complete the quote</span><span class="sd">Add local items, substitute unavailable items.</span><span class="chips"><span class="c c-i">POS</span></span></li>
+<li><span class="sn">06</span><span class="stt">Order and deposit</span><span class="sd">Customer accepts the quote and pays the deposit.</span><span class="chips"><span class="c c-i">POS</span><span class="c c-int">I8</span><span class="c c-int">I9</span></span></li>
+<li><span class="sn">07</span><span class="stt">Stock check and purchase</span><span class="sd">Reserve stock, or raise a PO to Oppein China.</span><span class="chips"><span class="c c-i">POS</span><span class="c c-int">I12</span></span></li>
 <li><span class="sn">08</span><span class="stt">Goods receipt</span><span class="sd">Receive, tag and label the goods.</span><span class="chips"><span class="c c-i">POS</span></span></li>
-<li><span class="sn">09</span><span class="stt">Schedule installation</span><span class="sd">Agree the slot; the MK job is created in Xero Projects.</span><span class="chips"><span class="c c-i">POS</span><span class="c c-s">Xero Projects</span><span class="c c-int">I10</span><a class="c c-q" href="#q27">Q27</a><a class="c c-q" href="#q28">Q28</a></span></li>
-<li><span class="sn">10</span><span class="stt">On-site installation</span><span class="sd">MK crew installs and logs time, trips and materials on mobile.</span><span class="chips"><span class="c c-s">Xero Projects</span><a class="c c-q" href="#q30">Q30</a></span></li>
-<li class="alt"><span class="sn">11</span><span class="stt">Change order</span><span class="sd">If the site differs: revised BOM, labour or trips, approved by the customer, invoiced from Xero.</span><span class="chips"><span class="c c-s">Xero Projects</span><span class="c c-s">Xero</span><a class="c c-q" href="#q29">Q29</a></span></li>
-<li><span class="sn">12</span><span class="stt">Final bill and payment</span><span class="sd">Balance collected on handover.</span><span class="chips"><span class="c c-i">POS</span><span class="c c-int">I9</span><a class="c c-q" href="#q24">Q24</a></span></li>
+<li><span class="sn">09</span><span class="stt">Schedule installation</span><span class="sd">Agree the slot; the MK job is created in Xero Projects.</span><span class="chips"><span class="c c-i">POS</span><span class="c c-s">Xero Projects</span><span class="c c-int">I10</span></span></li>
+<li><span class="sn">10</span><span class="stt">On-site installation</span><span class="sd">MK crew installs and logs time, trips and materials on mobile.</span><span class="chips"><span class="c c-s">Xero Projects</span></span></li>
+<li class="alt"><span class="sn">11</span><span class="stt">Change order</span><span class="sd">If the site differs: revised BOM, labour or trips, approved by the customer, invoiced from Xero.</span><span class="chips"><span class="c c-s">Xero Projects</span><span class="c c-s">Xero</span></span></li>
+<li><span class="sn">12</span><span class="stt">Final bill and payment</span><span class="sd">Balance collected on handover.</span><span class="chips"><span class="c c-i">POS</span><span class="c c-int">I9</span></span></li>
 <li><span class="sn">13</span><span class="stt">Job close</span><span class="sd">Actuals vs estimate; costs and variances posted.</span><span class="chips"><span class="c c-s">Xero Projects</span><span class="c c-s">Xero</span><span class="c c-int">I11</span></span></li>
 </ol>
 </div>
@@ -319,27 +320,27 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 <div class="flow">
 <div class="flow-h"><b>Core office · Month-end close and reporting</b><span>Everything closes in Xero</span></div>
 <ol class="steps">
-<li><span class="sn">01</span><span class="stt">Dorm revenue</span><span class="sd">Already in Xero from the dormitory system.</span><span class="chips"><span class="c c-s">Xero</span><span class="c c-int">I3</span><a class="c c-q" href="#q10">Q10</a></span></li>
+<li><span class="sn">01</span><span class="stt">Dorm revenue</span><span class="sd">Already in Xero from the dormitory system.</span><span class="chips"><span class="c c-s">Xero</span><span class="c c-int">I3</span></span></li>
 <li><span class="sn">02</span><span class="stt">Oppein sales and stock value</span><span class="sd">Already in Xero from the POS.</span><span class="chips"><span class="c c-s">Xero</span><span class="c c-int">I9</span></span></li>
 <li><span class="sn">03</span><span class="stt">Payroll journals</span><span class="sd">Posted per entity, incl. CPF.</span><span class="chips"><span class="c c-s">HRMS</span><span class="c c-s">Xero</span><span class="c c-int">I4</span></span></li>
 <li><span class="sn">04</span><span class="stt">MK project costs</span><span class="sd">Actuals and variances from Xero Projects.</span><span class="chips"><span class="c c-s">Xero</span><span class="c c-int">I11</span></span></li>
 <li><span class="sn">05</span><span class="stt">Bank reconciliation</span><span class="sd">Bank feeds, card and PayNow settlements.</span><span class="chips"><span class="c c-s">Xero</span><span class="c c-int">I6</span></span></li>
-<li><span class="sn">06</span><span class="stt">Allocations and intercompany</span><span class="sd">Core office costs; MK installation charged to Oppein.</span><span class="chips"><span class="c c-s">Xero</span><a class="c c-q" href="#q1">Q1</a><a class="c c-q" href="#q2">Q2</a></span></li>
-<li><span class="sn">07</span><span class="stt">Entity and group reports</span><span class="sd">P&amp;L, balance sheet, cost analysis.</span><span class="chips"><span class="c c-s">Xero</span><a class="c c-q" href="#q1">Q1</a></span></li>
-<li class="alt"><span class="sn">08</span><span class="stt">Management reporting</span><span class="sd">Each system's dashboard; consolidated view optional.</span><span class="chips"><span class="c c-m">Dashboards</span><span class="c c-int">I13</span><a class="c c-q" href="#q5">Q5</a></span></li>
+<li><span class="sn">06</span><span class="stt">Allocations and intercompany</span><span class="sd">Core office costs; MK installation charged to Oppein.</span><span class="chips"><span class="c c-s">Xero</span></span></li>
+<li><span class="sn">07</span><span class="stt">Entity and group reports</span><span class="sd">P&amp;L, balance sheet, cost analysis.</span><span class="chips"><span class="c c-s">Xero</span></span></li>
+<li class="alt"><span class="sn">08</span><span class="stt">Management reporting</span><span class="sd">Each system's dashboard; consolidated view optional.</span><span class="chips"><span class="c c-m">Dashboards</span><span class="c c-int">I13</span></span></li>
 </ol>
 </div>
 
 <div class="flow">
 <div class="flow-h"><b>Core office · Hire to pay</b><span>HRMS and Xero</span></div>
 <ol class="steps">
-<li><span class="sn">01</span><span class="stt">Hire and contract</span><span class="sd">Employee record and employment contract.</span><span class="chips"><span class="c c-s">HRMS</span><a class="c c-q" href="#q15">Q15</a></span></li>
-<li><span class="sn">02</span><span class="stt">Leave and attendance</span><span class="sd">Medical, annual, unpaid, hospitalisation, maternity.</span><span class="chips"><span class="c c-s">HRMS</span><a class="c c-q" href="#q17">Q17</a></span></li>
-<li><span class="sn">03</span><span class="stt">Monthly payroll</span><span class="sd">Incl. CPF and SINDA/CDAC contributions.</span><span class="chips"><span class="c c-s">HRMS</span><a class="c c-q" href="#q16">Q16</a></span></li>
+<li><span class="sn">01</span><span class="stt">Hire and contract</span><span class="sd">Employee record and employment contract.</span><span class="chips"><span class="c c-s">HRMS</span></span></li>
+<li><span class="sn">02</span><span class="stt">Leave and attendance</span><span class="sd">Medical, annual, unpaid, hospitalisation, maternity.</span><span class="chips"><span class="c c-s">HRMS</span></span></li>
+<li><span class="sn">03</span><span class="stt">Monthly payroll</span><span class="sd">Incl. CPF and SINDA/CDAC contributions.</span><span class="chips"><span class="c c-s">HRMS</span></span></li>
 <li><span class="sn">04</span><span class="stt">Statutory submission</span><span class="sd">CPF monthly, IR8A annually.</span><span class="chips"><span class="c c-s">HRMS</span><span class="c c-int">I5</span></span></li>
 <li><span class="sn">05</span><span class="stt">Post to Xero</span><span class="sd">Payroll journal per entity.</span><span class="chips"><span class="c c-s">HRMS</span><span class="c c-s">Xero</span><span class="c c-int">I4</span></span></li>
-<li><span class="sn">06</span><span class="stt">KPIs and reviews</span><span class="sd">Targets, manager reviews, history.</span><span class="chips"><span class="c c-s">HRMS</span><a class="c c-q" href="#q17">Q17</a></span></li>
-<li><span class="sn">07</span><span class="stt">System access</span><span class="sd">Grant and revoke access in each system.</span><span class="chips"><span class="c c-m">Manual</span><a class="c c-q" href="#q18">Q18</a></span></li>
+<li><span class="sn">06</span><span class="stt">KPIs and reviews</span><span class="sd">Targets, manager reviews, history.</span><span class="chips"><span class="c c-s">HRMS</span></span></li>
+<li><span class="sn">07</span><span class="stt">System access</span><span class="sd">Grant and revoke access in each system.</span><span class="chips"><span class="c c-m">Manual</span></span></li>
 </ol>
 </div>
 </section>
@@ -347,21 +348,21 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 <section id="integrations">
 <h2>Integration register</h2>
 <div class="tw"><table>
-<thead><tr><th>#</th><th>From → To</th><th>Data</th><th>Trigger</th><th>Built by</th><th>Open point</th><th>Qs</th></tr></thead>
+<thead><tr><th>#</th><th>From → To</th><th>Data</th><th>Trigger</th><th>Built by</th><th>Open point</th></tr></thead>
 <tbody>
-<tr><td><span class="idn d-std">I1</span></td><td>Turnstiles, CCTV, Wi-Fi, PA → DMS</td><td>Face match events, in/out, alarms, clip references</td><td>Real time</td><td><span class="st st-std">Vendor</span></td><td>Inside the vendor package. Face templates stay in the vendor system.</td><td><a href="#q12">Q12</a></td></tr>
-<tr><td><span class="idn d-tbc">I2</span></td><td>DMS → MOM</td><td>Headcount in/out, nominal roll, incident reports</td><td>Periodic and per incident</td><td><span class="st st-std">Vendor</span></td><td>Does the DMS submit directly, or do staff upload?</td><td><a href="#q11">Q11</a></td></tr>
-<tr><td><span class="idn d-tbc">I3</span></td><td>DMS → Xero (dorm entity)</td><td>Rent invoices, deposits, payments received</td><td>Monthly or per invoice</td><td><span class="st st-tbc">Vendor push, IR supervises</span></td><td>Method unknown: native connector, API or file. Does the DMS do billing at all?</td><td><a href="#q9">Q9</a> <a href="#q10">Q10</a></td></tr>
-<tr><td><span class="idn d-tbc">I4</span></td><td>HRMS → Xero</td><td>Pay-run journal, CPF and SINDA/CDAC liabilities</td><td>Monthly per entity</td><td><span class="st st-tbc">Native connector</span></td><td>Check the Xero connector of the HRMS chosen.</td><td><a href="#q15">Q15</a></td></tr>
-<tr><td><span class="idn d-std">I5</span></td><td>HRMS → CPF Board, IRAS</td><td>CPF contributions, IR8A</td><td>Monthly, annual</td><td><span class="st st-std">Native</span></td><td>Standard Singapore payroll feature.</td><td><a href="#q16">Q16</a></td></tr>
-<tr><td><span class="idn d-std">I6</span></td><td>Banks ↔ Xero</td><td>Bank feeds, payments, card and PayNow settlements</td><td>Daily</td><td><span class="st st-std">Native</span></td><td>None.</td><td></td></tr>
-<tr><td><span class="idn d-ir">I7</span></td><td>Oppein design → POS</td><td>Final design BOM as line items (SKU, qty), design reference</td><td>When the design is final</td><td><span class="st st-ir">IR</span></td><td>Needs the export format from Oppein and SKU mapping (about 1,800 stocked of 10,000).</td><td><a href="#q19">Q19</a> <a href="#q20">Q20</a></td></tr>
-<tr><td><span class="idn d-std">I8</span></td><td>Payment terminals ↔ POS</td><td>Payment requests and results</td><td>Per payment</td><td><span class="st st-std">POS standard</span></td><td>Confirm payment methods and provider.</td><td><a href="#q23">Q23</a></td></tr>
-<tr><td><span class="idn d-ir">I9</span></td><td>POS → Xero</td><td>Customers, sales invoices, deposits, payments, supplier bills, stock value</td><td>Per transaction or daily</td><td><span class="st st-ir">IR</span></td><td>Deposit, progress and final invoices post separately.</td><td><a href="#q23">Q23</a> <a href="#q24">Q24</a></td></tr>
-<tr><td><span class="idn d-ir">I10</span></td><td>POS → Xero Projects (one-way)</td><td>Project ID, customer, site, order value, BOM estimate</td><td>When the installation is scheduled</td><td><span class="st st-ir">IR</span></td><td>Full BOM or order value only.</td><td><a href="#q28">Q28</a></td></tr>
-<tr><td><span class="idn d-std">I11</span></td><td>Xero Projects → Xero GL</td><td>Change orders, MK labour, trips, consumables, variances</td><td>Ongoing</td><td><span class="st st-std">Native</span></td><td>MK crews use the Xero mobile app.</td><td><a href="#q29">Q29</a> <a href="#q30">Q30</a></td></tr>
-<tr><td><span class="idn d-tbc">I12</span></td><td>POS ↔ Oppein China</td><td>POs out; shipment notices and goods receipt in</td><td>Per order and shipment</td><td><span class="st st-tbc">Manual or file</span></td><td>How does Oppein China receive POs and confirm shipments?</td><td><a href="#q25">Q25</a></td></tr>
-<tr><td><span class="idn d-opt">I13</span></td><td>Xero, DMS, POS, HRMS → management dashboard</td><td>Revenue, cost, occupancy, sales, headcount by unit</td><td>Daily</td><td><span class="st st-tbc">Optional</span></td><td>Only if the client wants one consolidated view.</td><td><a href="#q5">Q5</a></td></tr>
+<tr><td><span class="idn d-std">I1</span></td><td>Turnstiles, CCTV, Wi-Fi, PA → DMS</td><td>Face match events, in/out, alarms, clip references</td><td>Real time</td><td><span class="st st-std">Vendor</span></td><td>Inside the vendor package. Face templates stay in the vendor system.</td></tr>
+<tr><td><span class="idn d-tbc">I2</span></td><td>DMS → MOM</td><td>Headcount in/out, nominal roll, incident reports</td><td>Periodic and per incident</td><td><span class="st st-std">Vendor</span></td><td>Does the DMS submit directly, or do staff upload?</td></tr>
+<tr><td><span class="idn d-tbc">I3</span></td><td>DMS → Xero (dorm entity)</td><td>Rent invoices, deposits, payments received</td><td>Monthly or per invoice</td><td><span class="st st-tbc">Vendor push, IR supervises</span></td><td>Method unknown: native connector, API or file. Does the DMS do billing at all?</td></tr>
+<tr><td><span class="idn d-tbc">I4</span></td><td>HRMS → Xero</td><td>Pay-run journal, CPF and SINDA/CDAC liabilities</td><td>Monthly per entity</td><td><span class="st st-tbc">Native connector</span></td><td>Check the Xero connector of the HRMS chosen.</td></tr>
+<tr><td><span class="idn d-std">I5</span></td><td>HRMS → CPF Board, IRAS</td><td>CPF contributions, IR8A</td><td>Monthly, annual</td><td><span class="st st-std">Native</span></td><td>Standard Singapore payroll feature.</td></tr>
+<tr><td><span class="idn d-std">I6</span></td><td>Banks ↔ Xero</td><td>Bank feeds, payments, card and PayNow settlements</td><td>Daily</td><td><span class="st st-std">Native</span></td><td>None.</td></tr>
+<tr><td><span class="idn d-ir">I7</span></td><td>Oppein design → POS</td><td>Final design BOM as line items (SKU, qty), design reference</td><td>When the design is final</td><td><span class="st st-ir">IR</span></td><td>Needs the export format from Oppein and SKU mapping (about 1,800 stocked of 10,000).</td></tr>
+<tr><td><span class="idn d-std">I8</span></td><td>Payment terminals ↔ POS</td><td>Payment requests and results</td><td>Per payment</td><td><span class="st st-std">POS standard</span></td><td>Confirm payment methods and provider.</td></tr>
+<tr><td><span class="idn d-ir">I9</span></td><td>POS → Xero</td><td>Customers, sales invoices, deposits, payments, supplier bills, stock value</td><td>Per transaction or daily</td><td><span class="st st-ir">IR</span></td><td>Deposit, progress and final invoices post separately.</td></tr>
+<tr><td><span class="idn d-ir">I10</span></td><td>POS → Xero Projects (one-way)</td><td>Project ID, customer, site, order value, BOM estimate</td><td>When the installation is scheduled</td><td><span class="st st-ir">IR</span></td><td>Full BOM or order value only.</td></tr>
+<tr><td><span class="idn d-std">I11</span></td><td>Xero Projects → Xero GL</td><td>Change orders, MK labour, trips, consumables, variances</td><td>Ongoing</td><td><span class="st st-std">Native</span></td><td>MK crews use the Xero mobile app.</td></tr>
+<tr><td><span class="idn d-tbc">I12</span></td><td>POS ↔ Oppein China</td><td>POs out; shipment notices and goods receipt in</td><td>Per order and shipment</td><td><span class="st st-tbc">Manual or file</span></td><td>How does Oppein China receive POs and confirm shipments?</td></tr>
+<tr><td><span class="idn d-opt">I13</span></td><td>Xero, DMS, POS, HRMS → management dashboard</td><td>Revenue, cost, occupancy, sales, headcount by unit</td><td>Daily</td><td><span class="st st-tbc">Optional</span></td><td>Only if the client wants one consolidated view.</td></tr>
 </tbody></table></div>
 </section>
 
@@ -380,59 +381,8 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 </tbody></table></div>
 </section>
 
-<section id="questions">
-<h2>Questions for the client</h2>
-<p class="note"><span class="blk">Blocks design</span> marks questions whose answer changes the design or an integration. The Q numbers match the tags in the process flows. Please record answers in the <a href="https://docs.google.com/spreadsheets/d/1PYPsXAB2DvhTFyzhw4e6ihrPGZLmhRvg_XoH-f1v7qA/edit">Client Questions v2</a> sheet.</p>
-<div class="qgrid">
 
-<div class="qcard"><h3>General and finance</h3><ol class="q">
-<li id="q1"><code>Q1</code><span>Is Xero already live? How many legal entities are there, and should each have its own Xero organisation, or one organisation with tracking categories?<span class="blk">Blocks design</span></span></li>
-<li id="q2"><code>Q2</code><span>How should core office costs be allocated to the units? Which charges flow between entities (dorm rent, MK installation, shared costs)?</span></li>
-<li id="q3"><code>Q3</code><span>What is the target go-live for each unit? Can the units go live in phases?</span></li>
-<li id="q4"><code>Q4</code><span>Who is the decision owner and day-to-day contact for each unit?</span></li>
-<li id="q5"><code>Q5</code><span>Each system has its own dashboard. Which 5 to 10 numbers must management see, and is one consolidated view needed?</span></li>
-<li id="q6"><code>Q6</code><span>Who will own the cloud accounts and admin logins for each system?</span></li>
-<li id="q7"><code>Q7</code><span>Are there existing systems or spreadsheets to migrate: tenants, staff, customers, stock, opening balances?</span></li>
-</ol></div>
-
-<div class="qcard"><h3>BU 1 · Dormitory</h3><ol class="q">
-<li id="q8"><code>Q8</code><span>When will you choose between Aupro and iSense, and on what criteria?<span class="blk">Blocks design</span></span></li>
-<li id="q9"><code>Q9</code><span>Who is billed for a bed: the employer, the worker, or both? What is the billing cycle, and how are deposits, utilities and part-months handled?<span class="blk">Blocks design</span></span></li>
-<li id="q10"><code>Q10</code><span>Should the dormitory system issue the invoices, or only send occupancy to Xero? How can it send data to Xero: API, webhook or file?<span class="blk">Blocks design</span></span></li>
-<li id="q11"><code>Q11</code><span>Which MOM reports are required and how often? How do you submit them today, and should the vendor system submit directly?</span></li>
-<li id="q12"><code>Q12</code><span>Walk us through check-in and check-out: who does KYC, and when is the face scan enrolled and deleted?</span></li>
-<li id="q13"><code>Q13</code><span>Please confirm the bed count and floors: 450 beds over three floors, or two?</span></li>
-<li id="q14"><code>Q14</code><span>Should the building maintenance system cover the whole building? Should we quote it now or later?</span></li>
-</ol></div>
-
-<div class="qcard"><h3>Core office · HR</h3><ol class="q">
-<li id="q15"><code>Q15</code><span>Do you prefer Great HR or Zoho HR? How many staff are in each entity, including MK?</span></li>
-<li id="q16"><code>Q16</code><span>Does each entity run its own payroll and CPF submission?</span></li>
-<li id="q17"><code>Q17</code><span>Which leave types and approval steps do you use, and how often are KPIs reviewed?</span></li>
-<li id="q18"><code>Q18</code><span>Who needs access to which system, and who approves access? Is a separate login per system acceptable?</span></li>
-</ol></div>
-
-<div class="qcard"><h3>BU 3 · Oppein Home and MK</h3><ol class="q">
-<li id="q19"><code>Q19</code><span>Can the Oppein design system export or send the BOM as line items (API, file, email)? Who at Oppein can share the format?<span class="blk">Blocks design</span></span></li>
-<li id="q20"><code>Q20</code><span>You will stock about 1,800 of Oppein's 10,000 SKUs. Which list is the master, and do the item codes match between the design and the POS?<span class="blk">Blocks design</span></span></li>
-<li id="q21"><code>Q21</code><span>Local items not in the design (screws, cement, tiles): who adds them to the order, and at which step?</span></li>
-<li id="q22"><code>Q22</code><span>If a designed item is not available, who chooses the substitute, and must the customer approve a revised quote?</span></li>
-<li id="q23"><code>Q23</code><span>What are the payment terms (deposit, progress, final), and which payment methods do you accept?</span></li>
-<li id="q24"><code>Q24</code><span>Is the final payment on site collected through the POS terminal, or by a Xero invoice with a payment link?</span></li>
-<li id="q25"><code>Q25</code><span>How do you order from Oppein China, how do they confirm shipments, and in which currency? How should freight and duty be added to stock cost?</span></li>
-<li id="q26"><code>Q26</code><span>Is stock reserved for each customer order, or held as general stock?</span></li>
-<li id="q27"><code>Q27</code><span>Is installation scheduled in the POS or in a separate calendar? What are the slot rules?</span></li>
-<li id="q28"><code>Q28</code><span>Should a confirmed order create the MK job in Xero Projects automatically, and with the full BOM or only the order value?<span class="blk">Blocks design</span></span></li>
-<li id="q29"><code>Q29</code><span>Who approves on-site change orders, and how does the customer sign off? Can change orders be invoiced from Xero rather than the POS?</span></li>
-<li id="q30"><code>Q30</code><span>How many MK crews are there? Are they employees or subcontractors, and how are man-day rates, trips and consumables recorded?</span></li>
-<li id="q31"><code>Q31</code><span>How many showrooms and warehouses are there? Are all 6 POS laptops at one site?</span></li>
-<li id="q32"><code>Q32</code><span>How do you handle warranty claims, complaints and returns?</span></li>
-</ol></div>
-
-</div>
-</section>
-
-<p class="note">Sources: Fong Tat brief (10 Nov 2026), internal briefing call, team review of the architecture options draft.</p>
+<p class="note">Questions for the client are tracked in the <a href="https://docs.google.com/spreadsheets/d/1PYPsXAB2DvhTFyzhw4e6ihrPGZLmhRvg_XoH-f1v7qA/edit">Client Questions v2</a> sheet. Sources: Fong Tat brief (10 Nov 2026), internal briefing call, team review of the architecture options draft.</p>
 </div>
 
 </body></html>
