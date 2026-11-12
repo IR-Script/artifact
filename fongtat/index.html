@@ -243,7 +243,7 @@ function render(k){
   const flows=procs(k).map(([bu,col,title,steps])=>`<div class="flow"><div class="bu" style="color:var(${col})">${bu}</div><h3>${esc(title)}</h3><div class="lane">`+
     steps.map((s,i)=>{const [nm,d,sys,q,cond,note]=s;
       const chg=note&&!/Out of scope/.test(note);
-      return `<div class="step${cond?" cond":""}${chg?" chg":""}"><div class="n">${String(i+1).padStart(2,"0")}</div><div class="nm">${esc(nm)}</div><div class="d">${esc(d)}</div>${note?`<div class="v">${esc(note)}</div>`:""}<div class="ft">${sys.map(x=>`<span class="tag ${SYS[x][1]}">${SYS[x][0]}</span>`).join("")}${q?q.split(", ").map(x=>`<span class="qb">${x}</span>`).join(""):""}</div></div>`}).join(AR)+`</div></div>`).join("");
+      return `<div class="step${cond?" cond":""}${chg?" chg":""}"><div class="n">${String(i+1).padStart(2,"0")}</div><div class="nm">${esc(nm)}</div><div class="d">${esc(d)}</div>${note?`<div class="v">${esc(note)}</div>`:""}<div class="ft">${sys.map(x=>`<span class="tag ${SYS[x][1]}">${SYS[x][0]}</span>`).join("")}</div></div>`}).join(AR)+`</div></div>`).join("");
   document.getElementById("view").innerHTML=`
   <section>
     <p class="approach"><strong>${v.code} · ${v.name}.</strong> ${esc(v.approach)}</p>
@@ -274,7 +274,6 @@ function render(k){
     <div class="legend" style="margin:0">
       <span><span class="sw" style="background:var(--mid-bg);border:1px solid var(--mid)"></span>Works differently in this version</span>
       <span><span class="sw" style="border:1px dashed var(--q)"></span>Only when needed</span>
-      <span><span class="qb">Q</span> Client question (see Client Questions sheet)</span>
     </div>
     ${flows}
   </section>`;
