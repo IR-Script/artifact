@@ -1,288 +1,389 @@
-<!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fong Tat Architecture Options</title>
-
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Fong Tat Systems Diagram</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: version tabs; each version = summary strip, architecture SVG, flow table, process lanes */
+/* Layout: one-page architecture sheet. Scope, diagram, design rules, process flows, integration register, systems, questions. */
 :root{
-  --bg:#f6f7f9; --surface:#ffffff; --fg:#1b2230; --muted:#5d6676; --rule:#d9dde5; --line:#3a4456; --chip:#f1f3f7;
-  --dorm:#2d6b4f; --dorm-bg:#e3f1e9; --xero:#2f5fae; --xero-bg:#e5edfb; --hr:#6a4aa8; --hr-bg:#eee8f9;
-  --pos:#a3561c; --pos-bg:#fbeee2; --des:#7a5a2f; --des-bg:#f3ece1; --ext:#5d6676; --ext-bg:#eceef2;
-  --mid:#1f7a80; --mid-bg:#e0f2f3; --q:#b42e4b; --q-bg:#fbe6eb; --open:#b5651d; --open-bg:#fbefe3; --ok:#2d6b4f; --ok-bg:#e3f1e9;
-  --lane1:#eef5f1; --lane2:#eef2fa; --lane3:#f8f1ea;
-  --display:"Space Grotesk",system-ui,sans-serif; --body:"Inter",system-ui,-apple-system,sans-serif;
+  --bg:#f4f6f8; --panel:#ffffff; --fg:#17212e; --muted:#5b6676; --line:#d2d9e2;
+  --accent:#0b6b78;
+  --v-bg:#e1ecfa; --v-fg:#1f4f8f;
+  --s-bg:#e0f1e6; --s-fg:#1d6439;
+  --i-bg:#d9f0f2; --i-fg:#0b6b78;
+  --o-bg:#ece5f7; --o-fg:#5a3b9b;
+  --warn:#8a5a08; --warn-bg:#fbeecd;
+  --bad:#9d241b; --bad-bg:#fbe1de;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#12161d; --surface:#1b212b; --fg:#e7eaf0; --muted:#9aa3b2; --rule:#2c3440; --line:#b8c0cd; --chip:#242b37;
-  --dorm:#7fc4a0; --dorm-bg:#1c3326; --xero:#8fb0ec; --xero-bg:#1c2742; --hr:#b9a2ec; --hr-bg:#2a2140;
-  --pos:#e8a35e; --pos-bg:#3a2a1a; --des:#d4b07c; --des-bg:#33291b; --ext:#9aa3b2; --ext-bg:#262d39;
-  --mid:#6fcfd4; --mid-bg:#163236; --q:#f08aa0; --q-bg:#3d1f28; --open:#e8a35e; --open-bg:#3a2a1a; --ok:#7fc4a0; --ok-bg:#1c3326;
-  --lane1:#16241d; --lane2:#171f33; --lane3:#271d15; color-scheme:dark}}
+  --bg:#0f141b; --panel:#17202a; --fg:#e4e9ef; --muted:#98a4b4; --line:#2c3644; --accent:#5cc6d3;
+  --v-bg:#1a2b46; --v-fg:#9cc2f4; --s-bg:#163828; --s-fg:#8fd5a7; --i-bg:#123a40; --i-fg:#5cc6d3; --o-bg:#2d2346; --o-fg:#c5afef;
+  --warn:#efc462; --warn-bg:#3b2e10; --bad:#f19a90; --bad-bg:#44211e; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#12161d; --surface:#1b212b; --fg:#e7eaf0; --muted:#9aa3b2; --rule:#2c3440; --line:#b8c0cd; --chip:#242b37;
-  --dorm:#7fc4a0; --dorm-bg:#1c3326; --xero:#8fb0ec; --xero-bg:#1c2742; --hr:#b9a2ec; --hr-bg:#2a2140;
-  --pos:#e8a35e; --pos-bg:#3a2a1a; --des:#d4b07c; --des-bg:#33291b; --ext:#9aa3b2; --ext-bg:#262d39;
-  --mid:#6fcfd4; --mid-bg:#163236; --q:#f08aa0; --q-bg:#3d1f28; --open:#e8a35e; --open-bg:#3a2a1a; --ok:#7fc4a0; --ok-bg:#1c3326;
-  --lane1:#16241d; --lane2:#171f33; --lane3:#271d15; color-scheme:dark}
-body{background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.45}
-.wrap{max-width:1280px;margin:0 auto;padding-block:28px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:22px}
-header h1{font-family:var(--display);font-size:1.75rem;margin:0;text-wrap:balance}
-header p{margin:4px 0 0;color:var(--muted);max-width:75ch}
-.eyebrow{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
-.tabs{display:flex;flex-wrap:wrap;gap:8px}
-.tab{font:inherit;cursor:pointer;border:1px solid var(--rule);background:var(--surface);color:var(--fg);border-radius:8px;padding:10px 14px;text-align:left;display:flex;flex-direction:column;gap:2px;min-width:200px;flex:1 1 200px}
-.tab b{font-family:var(--display);font-size:1rem}
-.tab span{font-size:.78rem;color:var(--muted)}
-.tab[aria-selected="true"]{border-color:var(--fg);box-shadow:inset 0 -3px 0 var(--fg)}
-.tab:focus-visible{outline:2px solid var(--xero);outline-offset:2px}
-.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
-.sum div{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:10px 12px;min-width:0}
-.sum dt{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
-.sum dd{margin:2px 0 0;font-size:.88rem;font-weight:500}
-.lvl{display:inline-flex;gap:3px;vertical-align:middle;margin-right:6px}.lvl i{width:10px;height:10px;border-radius:2px;background:var(--rule)}.lvl i.on{background:var(--fg)}
-.approach{font-size:.95rem;max-width:90ch;margin:0}
-h2{font-family:var(--display);font-size:1.2rem;margin:0 0 10px}
-.panel{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:12px;overflow-x:auto}
-.panel svg{display:block;min-width:980px;width:100%;height:auto}
-svg text{font-family:var(--body);fill:var(--fg)}
-.lt{font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.02em}
-.ls{font-size:11px;fill:var(--muted)}
-.bx{fill:var(--surface);stroke:var(--rule);stroke-width:1.2}
-.bx.hub{stroke:var(--xero);stroke-width:2}.bx.mid{fill:var(--mid-bg);stroke:var(--mid);stroke-width:2}
-.bx.ext{fill:none;stroke:var(--muted);stroke-dasharray:5 4}
-.t{font-family:var(--display);font-weight:600;font-size:15px}
-.s{font-size:11px;fill:var(--muted)}.c{font-size:11.5px}
-.fl{stroke:var(--line);stroke-width:1.6;fill:none}.fl.tbc{stroke-dasharray:6 4}
-.ah{fill:var(--line)}.bd{fill:var(--fg)}.bt{fill:var(--bg);font-size:10px;font-weight:600;text-anchor:middle}
-.lb{font-size:10.5px;fill:var(--muted);paint-order:stroke;stroke:var(--surface);stroke-width:4px;stroke-linejoin:round}
-.legend{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:.8rem;color:var(--muted);align-items:center;margin-top:8px}
-.tbl{overflow-x:auto;border:1px solid var(--rule);border-radius:10px;background:var(--surface)}
-table{border-collapse:collapse;width:100%;min-width:720px;font-size:.85rem}
-th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
-th{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  --bg:#0f141b; --panel:#17202a; --fg:#e4e9ef; --muted:#98a4b4; --line:#2c3644; --accent:#5cc6d3;
+  --v-bg:#1a2b46; --v-fg:#9cc2f4; --s-bg:#163828; --s-fg:#8fd5a7; --i-bg:#123a40; --i-fg:#5cc6d3; --o-bg:#2d2346; --o-fg:#c5afef;
+  --warn:#efc462; --warn-bg:#3b2e10; --bad:#f19a90; --bad-bg:#44211e; color-scheme:dark}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.55;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:40px}
+h1{font-size:28px;line-height:1.2;margin:0;font-weight:600;text-wrap:balance}
+h2{font-size:19px;margin:0;font-weight:600;text-wrap:balance}
+h3{font-size:13px;margin:0;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+p{margin:0}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.sub{color:var(--muted);max-width:80ch;margin-top:6px}
+.meta{font-family:var(--f-mono);font-size:12px;color:var(--muted);display:flex;gap:6px 18px;flex-wrap:wrap;margin-top:10px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13.5px;margin-top:14px}
+section{display:flex;flex-direction:column;gap:14px;min-width:0;scroll-margin-top:16px}
+.find{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.find>div{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px;min-width:0}
+.find b{display:block;font-size:15px;font-weight:600;margin-bottom:4px}
+.find span{color:var(--muted);font-size:13.5px}
+.sw{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px;overflow-x:auto}
+.sw svg{display:block;min-width:1000px;width:100%;height:auto}
+figure{margin:0}
+.lg{display:flex;gap:8px 20px;flex-wrap:wrap;font-size:13px;color:var(--muted);align-items:center}
+.lg i{display:inline-block;width:26px;height:0;border-top:2px solid;margin-right:6px;vertical-align:middle}
+.lg s{display:inline-block;width:16px;height:12px;border:1.4px solid;border-radius:2px;margin-right:6px;vertical-align:middle;text-decoration:none}
+.k-ir{border-color:var(--i-fg)}.k-std{border-color:var(--s-fg)}.k-tbc{border-color:var(--warn);border-top-style:dashed}.k-opt{border-color:var(--muted);border-top-style:dotted}
+.b-v{background:var(--v-bg);border-color:var(--v-fg)}.b-s{background:var(--s-bg);border-color:var(--s-fg)}.b-i{background:var(--i-bg);border-color:var(--i-fg)}.b-o{background:var(--o-bg);border-color:var(--o-fg)}.b-x{background:var(--panel);border-color:var(--muted);border-style:dashed}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;min-width:860px;font-size:13.5px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:600;background:var(--bg)}
 tr:last-child td{border-bottom:0}
-td.n{font-variant-numeric:tabular-nums;font-weight:600;width:30px}
-.pill{display:inline-block;font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
-.pill.ok{color:var(--ok);background:var(--ok-bg)}.pill.open{color:var(--open);background:var(--open-bg)}
-.tag{display:inline-block;font-size:.66rem;font-weight:600;padding:2px 6px;border-radius:4px;white-space:nowrap}
-.t-dorm{color:var(--dorm);background:var(--dorm-bg)}.t-xero{color:var(--xero);background:var(--xero-bg)}.t-hr{color:var(--hr);background:var(--hr-bg)}
-.t-pos{color:var(--pos);background:var(--pos-bg)}.t-des{color:var(--des);background:var(--des-bg)}.t-ext{color:var(--ext);background:var(--ext-bg)}.t-mid{color:var(--mid);background:var(--mid-bg)}
-.qb{display:inline-block;font-size:.64rem;font-weight:700;color:var(--q);background:var(--q-bg);padding:1px 6px;border-radius:999px}
-.flow{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:14px 14px 4px}
-.flow h3{font-family:var(--display);font-size:1.02rem;margin:0}
-.bu{font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
-.lane{display:flex;align-items:stretch;overflow-x:auto;padding:10px 0 12px}
-.step{flex:0 0 156px;border:1px solid var(--rule);border-radius:8px;padding:9px 10px;display:flex;flex-direction:column;gap:5px;background:var(--surface)}
-.step.cond{border-style:dashed;border-color:var(--q)}
-.step.chg{background:var(--mid-bg);border-color:var(--mid)}
-.step .n{font-size:.66rem;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
-.step .nm{font-size:.83rem;font-weight:600;line-height:1.3}
-.step .d{font-size:.73rem;color:var(--muted)}
-.step .v{font-size:.72rem;font-weight:600;color:var(--mid)}
-.step .ft{margin-top:auto;display:flex;flex-wrap:wrap;gap:4px}
-.ar{flex:0 0 20px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
-.ar svg{width:16px;height:12px}
-.sw{display:inline-block;width:22px;height:12px;border-radius:3px;vertical-align:middle;margin-right:6px}
-section{display:flex;flex-direction:column;gap:12px}
+.idn{display:inline-block;font-family:var(--f-mono);font-size:11.5px;font-weight:500;padding:1px 7px;border-radius:10px;color:var(--panel);white-space:nowrap}
+.d-ir{background:var(--i-fg)}.d-std{background:var(--s-fg)}.d-tbc{background:var(--warn)}.d-opt{background:var(--muted)}
+.st{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:3px;white-space:nowrap}
+.st-ir{background:var(--i-bg);color:var(--i-fg)}.st-std{background:var(--s-bg);color:var(--s-fg)}.st-tbc{background:var(--warn-bg);color:var(--warn)}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.rule{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 16px;min-width:0;font-size:14px}
+.rule b{display:block;margin-bottom:2px}
+.rule span{color:var(--muted);font-size:13.5px}
+/* process flows */
+.flow{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px 16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.flow-h{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.flow-h b{font-size:15.5px}
+.flow-h span{font-size:13px;color:var(--muted)}
+ol.steps{list-style:none;margin:0;padding:2px 2px 12px;display:flex;flex-wrap:nowrap;gap:30px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:thin}
+ol.steps li{scroll-snap-align:start}
+ol.steps li{flex:0 0 176px;position:relative;border:1px solid var(--line);border-radius:5px;padding:10px 11px;display:flex;flex-direction:column;gap:5px;min-width:0;background:var(--bg)}
+ol.steps li:not(:last-child)::after{content:"\2192";position:absolute;right:-24px;top:50%;transform:translateY(-50%);font-size:18px;line-height:1;color:var(--muted)}
+ol.steps li.alt{border-style:dashed}
+.sn{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.stt{font-weight:600;font-size:13.5px;line-height:1.3}
+.sd{font-size:12.5px;color:var(--muted);line-height:1.4}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:auto;padding-top:2px}
+.c{font-size:11px;font-weight:500;padding:0 6px;border-radius:3px;white-space:nowrap;border:1px solid}
+.c-v{background:var(--v-bg);color:var(--v-fg);border-color:transparent}
+.c-s{background:var(--s-bg);color:var(--s-fg);border-color:transparent}
+.c-i{background:var(--i-bg);color:var(--i-fg);border-color:transparent}
+.c-o{background:var(--o-bg);color:var(--o-fg);border-color:transparent}
+.c-m{background:transparent;color:var(--muted);border-color:var(--line)}
+.c-int{font-family:var(--f-mono);background:var(--panel);color:var(--fg);border-color:var(--line)}
+a.c-q{font-family:var(--f-mono);background:var(--warn-bg);color:var(--warn);border-color:transparent;text-decoration:none}
+a.c-q:hover{text-decoration:underline}
+/* questions */
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px}
+.qcard{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+ol.q{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px}
+ol.q li{display:grid;grid-template-columns:42px 1fr;gap:4px;scroll-margin-top:16px;border-radius:4px}
+ol.q li:target{background:var(--warn-bg)}
+ol.q li>code{font-family:var(--f-mono);font-size:12px;color:var(--muted);padding-top:2px}
+.blk{display:inline-block;font-size:11px;font-weight:600;padding:0 6px;border-radius:3px;background:var(--bad-bg);color:var(--bad);margin-left:4px;white-space:nowrap}
+.note{font-size:13px;color:var(--muted);max-width:95ch}
+ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+/* SVG */
+.band{fill:none;stroke:var(--line);stroke-width:1.4}
+.pkg{fill:none;stroke:var(--v-fg);stroke-width:1.2;stroke-dasharray:5 4}
+.bx-v{fill:var(--v-bg);stroke:var(--v-fg);stroke-width:1.2}
+.bx-s{fill:var(--s-bg);stroke:var(--s-fg);stroke-width:1.2}
+.bx-i{fill:var(--i-bg);stroke:var(--i-fg);stroke-width:2}
+.bx-o{fill:var(--o-bg);stroke:var(--o-fg);stroke-width:1.2}
+.bx-x{fill:var(--panel);stroke:var(--muted);stroke-width:1.2;stroke-dasharray:5 4}
+.bx-n{fill:var(--bg);stroke:var(--muted);stroke-width:1.2;stroke-dasharray:2 3}
+.t{font-family:var(--f-body);font-size:12.5px;font-weight:600;fill:var(--fg)}
+.s{font-family:var(--f-body);font-size:11px;fill:var(--muted)}
+.h{font-family:var(--f-body);font-size:14px;font-weight:600;fill:var(--fg)}
+.hs{font-family:var(--f-body);font-size:11.5px;fill:var(--muted)}
+.e{fill:none;stroke-width:2}
+.e-ir{stroke:var(--i-fg)}.e-std{stroke:var(--s-fg)}.e-tbc{stroke:var(--warn);stroke-dasharray:6 4}.e-opt{stroke:var(--muted);stroke-dasharray:2 4}
+.bus{fill:none;stroke:var(--s-fg);stroke-width:1.6}
+.m-ir{fill:var(--i-fg)}.m-std{fill:var(--s-fg)}.m-tbc{fill:var(--warn)}.m-opt{fill:var(--muted)}
+.bt{font-family:var(--f-mono);font-size:10px;font-weight:600;fill:var(--panel);text-anchor:middle}
 </style>
 
 <div class="wrap">
 <header>
-  <div class="eyebrow">Fong Tat · Two alternative versions · Draft for 16 Nov 2026</div>
-  <h1>Fong Tat Architecture Options</h1>
-  <p>Same off-the-shelf systems in every version. The versions differ in how the systems connect and how much is automated. Pick a version to see its architecture diagram, data flows and process flows.</p>
+<h1>Fong Tat: High-Level Systems Design</h1>
+<p class="sub">The systems Fong Tat will run across its three units, how they connect, how the main processes run through them, and what we still need to confirm with the client. All components are off the shelf. Integrated Retail delivers the Oppein POS and its integrations, and supervises the rest.</p>
+<div class="meta"><span>Draft v2 · 12 Nov 2026</span><span>Due EOD 15 Nov 2026</span><span>Integrated Retail</span></div>
+<nav class="toc"><a href="#scope">Scope</a><a href="#diagram">Diagram</a><a href="#rules">Design rules</a><a href="#flows">Process flows</a><a href="#integrations">Integrations</a><a href="#systems">Systems</a><a href="https://docs.google.com/spreadsheets/d/1PYPsXAB2DvhTFyzhw4e6ihrPGZLmhRvg_XoH-f1v7qA/edit">Client questions (Google Sheet)</a></nav>
 </header>
-<div class="tabs" role="tablist" id="tabs"></div>
-<main id="view" style="display:flex;flex-direction:column;gap:22px"></main>
+
+<section id="scope">
+<h2>Scope at a glance</h2>
+<div class="find">
+<div><b>BU 1 · Workers' dormitory</b><span>One vendor package, Aupro or iSense: dormitory management, face turnstiles, CCTV, Wi-Fi and PA. Installed fully by the vendor. IR supervises the feed into Xero.</span></div>
+<div><b>Core office</b><span>Xero for accounting across all entities, and an off-the-shelf HRMS, Great HR or Zoho HR. The building maintenance system is requested but not yet scoped.</span></div>
+<div><b>BU 3 · Oppein Home + MK Services</b><span>IR core delivery: POS on Retail Pro Prism or Cegid, with CRM and inventory inside the POS. The Oppein design system supplies the BOM. MK installation jobs run in Xero Projects.</span></div>
+</div>
+</section>
+
+<section id="diagram">
+<h2>Systems and integrations</h2>
+<div class="lg">
+<span><s class="b-v"></s>Dorm vendor package</span><span><s class="b-s"></s>Off-the-shelf SaaS</span><span><s class="b-i"></s>IR delivers</span><span><s class="b-o"></s>Supplied by Oppein</span><span><s class="b-x"></s>Outside party / not scoped</span>
+</div>
+<div class="lg">
+<span><i class="k-ir"></i>IR builds</span><span><i class="k-std"></i>Vendor or native connector</span><span><i class="k-tbc"></i>Method to confirm</span><span><i class="k-opt"></i>Optional</span>
+</div>
+<figure class="sw"><svg viewBox="0 0 1200 750" role="img" aria-label="High-level systems diagram for Fong Tat showing the dormitory vendor package, core office systems, Oppein POS and Xero, with 13 numbered integrations">
+<defs>
+<marker id="a-ir" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto-start-reverse"><path class="m-ir" d="M0,0 L10,5 L0,10 z"/></marker>
+<marker id="a-std" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto-start-reverse"><path class="m-std" d="M0,0 L10,5 L0,10 z"/></marker>
+<marker id="a-tbc" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto-start-reverse"><path class="m-tbc" d="M0,0 L10,5 L0,10 z"/></marker>
+<marker id="a-opt" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto-start-reverse"><path class="m-opt" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+<rect class="band" x="10" y="10" width="990" height="240" rx="6"/>
+<text class="h" x="24" y="34">BU 1 · Workers' dormitory</text>
+<text class="hs" x="24" y="50">Aupro or iSense · supplied and installed by the vendor</text>
+<rect class="band" x="10" y="262" width="990" height="200" rx="6"/>
+<text class="h" x="24" y="286">Core office</text>
+<text class="hs" x="24" y="302">Corporate office and cost centre</text>
+<rect class="band" x="10" y="474" width="990" height="266" rx="6"/>
+<text class="h" x="24" y="498">BU 3 · Oppein Home + MK Services</text>
+<text class="hs" x="24" y="514">IR core delivery</text>
+<rect class="band" x="1020" y="10" width="170" height="730" rx="6"/>
+<text class="h" x="1105" y="34" text-anchor="middle">Outside parties</text>
+
+<rect class="pkg" x="24" y="62" width="520" height="176" rx="6"/>
+<text class="hs" x="534" y="232" text-anchor="end">vendor package</text>
+<rect class="bx-v" x="40" y="80" width="180" height="30" rx="4"/><text class="t" x="130" y="99" text-anchor="middle">Face turnstiles ×2</text>
+<rect class="bx-v" x="40" y="116" width="180" height="30" rx="4"/><text class="t" x="130" y="135" text-anchor="middle">CCTV + NVR + gate voice</text>
+<rect class="bx-v" x="40" y="152" width="180" height="30" rx="4"/><text class="t" x="130" y="171" text-anchor="middle">Wi-Fi (MOM spec)</text>
+<rect class="bx-v" x="40" y="188" width="180" height="30" rx="4"/><text class="t" x="130" y="207" text-anchor="middle">PA system</text>
+<rect class="bx-v" x="300" y="80" width="230" height="140" rx="4"/>
+<text class="t" x="415" y="108" text-anchor="middle">Dormitory Management System</text>
+<text class="s" x="415" y="128" text-anchor="middle">beds, leases, tenants + KYC</text>
+<text class="s" x="415" y="144" text-anchor="middle">in/out log · incidents</text>
+<text class="s" x="415" y="160" text-anchor="middle">occupancy and revenue reports</text>
+<text class="s" x="415" y="176" text-anchor="middle">MOM submissions</text>
+
+<rect class="bx-s" x="300" y="312" width="230" height="62" rx="4"/>
+<text class="t" x="415" y="334" text-anchor="middle">HRMS: Great HR or Zoho HR</text>
+<text class="s" x="415" y="351" text-anchor="middle">payroll · leave · CPF · contracts · KPIs</text>
+<text class="s" x="415" y="366" text-anchor="middle">staff of all entities, incl. MK</text>
+<rect class="bx-n" x="300" y="388" width="230" height="58" rx="4"/>
+<text class="t" x="415" y="408" text-anchor="middle">Building maintenance system</text>
+<text class="s" x="415" y="424" text-anchor="middle">cleaning, lift, fire, generator roster</text>
+<text class="s" x="415" y="438" text-anchor="middle">requested · not yet scoped</text>
+<rect class="bx-s" x="590" y="290" width="220" height="160" rx="4"/>
+<text class="t" x="700" y="330" text-anchor="middle">Xero</text>
+<text class="s" x="700" y="350" text-anchor="middle">organisation per entity (to confirm)</text>
+<text class="s" x="700" y="366" text-anchor="middle">GL · AP · AR · bank reconciliation</text>
+<text class="s" x="700" y="382" text-anchor="middle">P&amp;L · balance sheet</text>
+<text class="s" x="700" y="398" text-anchor="middle">stock value from POS</text>
+<rect class="bx-n" x="850" y="380" width="140" height="66" rx="4"/>
+<text class="t" x="920" y="402" text-anchor="middle">Mgmt dashboard</text>
+<text class="s" x="920" y="418" text-anchor="middle">optional showcase</text>
+<text class="s" x="920" y="432" text-anchor="middle">Xero, DMS, POS, HRMS</text>
+
+<rect class="bx-o" x="40" y="530" width="190" height="66" rx="4"/>
+<text class="t" x="135" y="554" text-anchor="middle">Oppein design system</text>
+<text class="s" x="135" y="571" text-anchor="middle">supplied by Oppein · web</text>
+<text class="s" x="135" y="586" text-anchor="middle">final design → BOM</text>
+<rect class="bx-s" x="40" y="620" width="190" height="44" rx="4"/>
+<text class="t" x="135" y="639" text-anchor="middle">Payment terminals</text>
+<text class="s" x="135" y="655" text-anchor="middle">card · PayNow · others</text>
+<rect class="bx-i" x="300" y="530" width="230" height="190" rx="4"/>
+<text class="t" x="415" y="556" text-anchor="middle">POS: Retail Pro Prism or Cegid</text>
+<text class="s" x="415" y="580" text-anchor="middle">CRM · customers and sites</text>
+<text class="s" x="415" y="596" text-anchor="middle">quotes and sales orders</text>
+<text class="s" x="415" y="612" text-anchor="middle">inventory (stock master) · POs</text>
+<text class="s" x="415" y="628" text-anchor="middle">payments and deposits</text>
+<text class="s" x="415" y="644" text-anchor="middle">delivery scheduling</text>
+<text class="s" x="415" y="676" text-anchor="middle">6 laptop terminals</text>
+<rect class="bx-s" x="590" y="570" width="220" height="96" rx="4"/>
+<text class="t" x="700" y="596" text-anchor="middle">Xero Projects</text>
+<text class="s" x="700" y="614" text-anchor="middle">MK jobs · change orders</text>
+<text class="s" x="700" y="630" text-anchor="middle">timesheets, trips (mobile)</text>
+<text class="s" x="700" y="646" text-anchor="middle">variance vs estimate</text>
+
+<rect class="bx-x" x="1035" y="78" width="150" height="46" rx="4"/>
+<text class="t" x="1110" y="98" text-anchor="middle">MOM</text>
+<text class="s" x="1110" y="114" text-anchor="middle">Ministry of Manpower</text>
+<rect class="bx-x" x="1035" y="252" width="150" height="44" rx="4"/>
+<text class="t" x="1110" y="271" text-anchor="middle">CPF Board · IRAS</text>
+<text class="s" x="1110" y="287" text-anchor="middle">CPF · IR8A</text>
+<rect class="bx-x" x="1035" y="318" width="150" height="44" rx="4"/>
+<text class="t" x="1110" y="337" text-anchor="middle">Banks</text>
+<text class="s" x="1110" y="353" text-anchor="middle">feeds · settlements</text>
+<rect class="bx-x" x="1035" y="672" width="150" height="46" rx="4"/>
+<text class="t" x="1110" y="692" text-anchor="middle">Oppein China</text>
+<text class="s" x="1110" y="708" text-anchor="middle">supplier · POs, shipments</text>
+
+<path class="bus" d="M220,95 L250,95 M220,131 L250,131 M220,167 L250,167 M220,203 L250,203 M250,95 L250,203"/>
+<path class="e e-std" d="M250,149 L300,149" marker-end="url(#a-std)"/>
+<circle class="m-std" cx="272" cy="149" r="10"/><text class="bt" x="272" y="152.5">1</text>
+<path class="e e-tbc" d="M530,101 L1035,101" marker-end="url(#a-tbc)"/>
+<circle class="m-tbc" cx="790" cy="101" r="10"/><text class="bt" x="790" y="104.5">2</text>
+<path class="e e-tbc" d="M530,200 L700,200 L700,290" marker-end="url(#a-tbc)"/>
+<circle class="m-tbc" cx="620" cy="200" r="10"/><text class="bt" x="620" y="203.5">3</text>
+<path class="e e-tbc" d="M530,334 L590,334" marker-end="url(#a-tbc)"/>
+<circle class="m-tbc" cx="560" cy="334" r="10"/><text class="bt" x="560" y="337.5">4</text>
+<path class="e e-std" d="M415,312 L415,274 L1035,274" marker-end="url(#a-std)"/>
+<circle class="m-std" cx="480" cy="274" r="10"/><text class="bt" x="480" y="277.5">5</text>
+<path class="e e-std" d="M810,340 L1035,340" marker-end="url(#a-std)" marker-start="url(#a-std)"/>
+<circle class="m-std" cx="930" cy="340" r="10"/><text class="bt" x="930" y="343.5">6</text>
+<path class="e e-ir" d="M230,563 L300,563" marker-end="url(#a-ir)"/>
+<circle class="m-ir" cx="265" cy="563" r="10"/><text class="bt" x="265" y="566.5">7</text>
+<path class="e e-std" d="M230,642 L300,642" marker-end="url(#a-std)" marker-start="url(#a-std)"/>
+<circle class="m-std" cx="265" cy="642" r="10"/><text class="bt" x="265" y="645.5">8</text>
+<path class="e e-ir" d="M530,545 L640,545 L640,450" marker-end="url(#a-ir)"/>
+<circle class="m-ir" cx="585" cy="545" r="10"/><text class="bt" x="585" y="548.5">9</text>
+<path class="e e-ir" d="M530,618 L590,618" marker-end="url(#a-ir)"/>
+<circle class="m-ir" cx="560" cy="618" r="10"/><text class="bt" x="560" y="621.5">10</text>
+<path class="e e-std" d="M760,570 L760,450" marker-end="url(#a-std)"/>
+<circle class="m-std" cx="760" cy="510" r="10"/><text class="bt" x="760" y="513.5">11</text>
+<path class="e e-tbc" d="M530,695 L1035,695" marker-end="url(#a-tbc)" marker-start="url(#a-tbc)"/>
+<circle class="m-tbc" cx="790" cy="695" r="10"/><text class="bt" x="790" y="698.5">12</text>
+<path class="e e-opt" d="M810,413 L850,413" marker-end="url(#a-opt)"/>
+<circle class="m-opt" cx="830" cy="413" r="10"/><text class="bt" x="830" y="416.5">13</text>
+</svg></figure>
+<p class="note">Integration 10 is one-way: the POS creates the MK job in Xero Projects, and change orders are billed from Xero. A middleware layer with a reporting database can be added in a later phase if volumes or reporting needs grow.</p>
+</section>
+
+<section id="rules">
+<h2>Design rules</h2>
+<div class="rules">
+<div class="rule"><b>Off the shelf only</b><span>No core transaction system is built. IR configures, integrates and supervises.</span></div>
+<div class="rule"><b>POS is the stock master</b><span>Stock quantities live in the POS. Xero receives stock value and cost of sales only, so stock is never kept in two places.</span></div>
+<div class="rule"><b>One billing rule for Oppein customers</b><span>Deposits, sales invoices and final payments come from the POS. Change orders are invoiced from Xero against the same project. To confirm with the client.</span></div>
+<div class="rule"><b>One project ID</b><span>Created once in the POS when the order is confirmed and reused in Xero Projects and on every invoice.</span></div>
+<div class="rule"><b>Biometric and KYC data stay with the vendor</b><span>Face templates and worker KYC stay in the dormitory system. Only occupancy and invoice data leave it, in line with PDPC guidance.</span></div>
+<div class="rule"><b>Separate logins and dashboards</b><span>There is no single sign-on. Each system keeps its own users, roles and dashboard. A consolidated dashboard is optional.</span></div>
+</div>
+</section>
+
+<section id="flows">
+<h2>Process flows</h2>
+<div class="lg"><span>Each step shows the system that runs it and the integration it uses (I#). A dashed step happens only when needed or is not yet scoped.</span></div>
+
+<div class="flow">
+<div class="flow-h"><b>BU 1 · Worker move-in to monthly billing</b><span>Dormitory system and Xero</span></div>
+<ol class="steps">
+<li><span class="sn">01</span><span class="stt">Bed booking</span><span class="sd">Employer requests beds and the period.</span><span class="chips"><span class="c c-v">DMS</span></span></li>
+<li><span class="sn">02</span><span class="stt">Worker KYC</span><span class="sd">Work permit, passport and employer details.</span><span class="chips"><span class="c c-v">DMS</span></span></li>
+<li><span class="sn">03</span><span class="stt">Bed allocation and tenancy</span><span class="sd">Assign the bed and issue the tenancy agreement.</span><span class="chips"><span class="c c-v">DMS</span></span></li>
+<li><span class="sn">04</span><span class="stt">Face enrolment</span><span class="sd">Register the worker on the turnstiles.</span><span class="chips"><span class="c c-v">Turnstiles</span><span class="c c-int">I1</span></span></li>
+<li><span class="sn">05</span><span class="stt">Monthly rent invoice</span><span class="sd">Raised per bed or per employer and sent to Xero.</span><span class="chips"><span class="c c-v">DMS</span><span class="c c-s">Xero</span><span class="c c-int">I3</span></span></li>
+<li><span class="sn">06</span><span class="stt">Payment and reconciliation</span><span class="sd">Receipt from the bank feed matched to the invoice.</span><span class="chips"><span class="c c-s">Xero</span><span class="c c-int">I6</span></span></li>
+<li><span class="sn">07</span><span class="stt">Move-out</span><span class="sd">Revoke access, delete face data, refund deposit, free the bed.</span><span class="chips"><span class="c c-v">DMS</span><span class="c c-s">Xero</span></span></li>
+</ol>
 </div>
 
-<script>
-const V={
- v1:{code:"V1",name:"Integrated Solutions",tagline:"Alternative",
-   approach:"Direct API integrations into Xero where each solution supports them. Full BOM goes into the POS. On-site payments run through the POS.",
-   manual:2,build:2,run:2,risk:"Vendor APIs may be limited (to confirm)",fit:"Vendors have usable APIs; moderate volumes"},
- v2:{code:"V2",name:"Integrated hub",tagline:"Proposed solution",
-   approach:"Every system connects through one integration layer that feeds Xero and a reporting database. Near real-time data and dashboards that combine financial and operational KPIs.",
-   manual:1,build:3,run:3,risk:"More moving parts to monitor and support",fit:"High volumes; management wants live operational KPIs"}
-};
-const FLOWS={
- v1:[[1,"Aupro / iSense","Xero","Rent invoices, deposits, dorm operating costs","API / webhook (per vendor)",0],[2,"Aupro / iSense","Ministry of Manpower","Occupancy, worker entry/exit records","Vendor's MOM reporting",1],[3,"Oppein Design","PRISM / Cegid","Full line-level BOM for quote and billing","Export / API from design system",0],[4,"PRISM / Cegid","Xero","Sales invoices, payments (incl. card terminal), customers, inventory value","Connector / API",0],[5,"PRISM / Cegid ↔ Xero Projects","MK Services","Installation jobs and schedule out to Xero Projects; change orders back to the POS for billing","Integration between POS and Xero Projects",0],[6,"Xero Projects","Xero","MK actual labour, man-days, materials, trips, variances and project invoices","Native: Xero Projects is part of Xero",1],[7,"Great HR / Zoho HR","Xero","Payroll journals by BU, CPF","Native integration / API",0],[8,"Xero","Dashboards","P&L, balance sheet, costs per BU + consolidated","Xero API",1]],
- v2:[[1,"Aupro / iSense","Integration layer","Invoices, deposits, costs, occupancy, entry/exit","API / webhook",0],[2,"Aupro / iSense","Ministry of Manpower","Occupancy, worker entry/exit records","Vendor's MOM reporting",1],[3,"Oppein Design","PRISM / Cegid","Full BOM incl. revisions; stock reserved automatically","API via integration layer",0],[4,"PRISM / Cegid","Integration layer","Sales, payments, customers, stock movements","API",0],[5,"Integration layer ↔ Xero Projects","MK Services","Jobs from the POS into Xero Projects; change orders synced back to the POS","API via integration layer",0],[6,"Xero Projects","Xero","MK actual labour, materials, trips, variances and project invoices","Native: Xero Projects is part of Xero",1],[7,"Great HR / Zoho HR","Integration layer","Payroll journals by BU, headcount","API",0],[8,"Xero + reporting DB","Dashboards","Financial + operational KPIs, AI-assisted","Reporting database",0]]
-};
+<div class="flow">
+<div class="flow-h"><b>BU 1 · Daily operations and MOM compliance</b><span>Dormitory vendor package</span></div>
+<ol class="steps">
+<li><span class="sn">01</span><span class="stt">Turnstile entry and exit</span><span class="sd">Face recognition logs every movement.</span><span class="chips"><span class="c c-v">Turnstiles</span><span class="c c-int">I1</span></span></li>
+<li><span class="sn">02</span><span class="stt">CCTV and gate recording</span><span class="sd">24/7 video in common areas, with audio at the security box.</span><span class="chips"><span class="c c-v">CCTV + NVR</span></span></li>
+<li><span class="sn">03</span><span class="stt">Live occupancy</span><span class="sd">Count of workers inside and outside, per floor.</span><span class="chips"><span class="c c-v">DMS</span></span></li>
+<li class="alt"><span class="sn">04</span><span class="stt">Incident</span><span class="sd">Logged with a reference to the CCTV clip.</span><span class="chips"><span class="c c-v">DMS</span></span></li>
+<li><span class="sn">05</span><span class="stt">Statutory report</span><span class="sd">Headcount, in/out and incidents submitted to MOM.</span><span class="chips"><span class="c c-v">DMS</span><span class="c c-int">I2</span></span></li>
+<li class="alt"><span class="sn">06</span><span class="stt">Maintenance roster</span><span class="sd">Lift, fire equipment, generator, cleaning. Not yet scoped.</span><span class="chips"><span class="c c-m">To be selected</span></span></li>
+</ol>
+</div>
 
-/* ---------- SVG helpers ---------- */
-const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
-function bx(x,y,w,h,title,sub,lines,cls="bx",accent){
-  let o=`<rect class="${cls}" x="${x}" y="${y}" width="${w}" height="${h}" rx="8"/>`;
-  if(accent) o+=`<rect x="${x}" y="${y}" width="${w}" height="4" rx="2" style="fill:var(${accent})"/>`;
-  o+=`<text x="${x+14}" y="${y+26}" class="t">${esc(title)}</text>`;
-  if(sub) o+=`<text x="${x+14}" y="${y+43}" class="s">${esc(sub)}</text>`;
-  (lines||[]).forEach((l,i)=>o+=`<text x="${x+14}" y="${y+64+i*18}" class="c">${esc(l)}</text>`);
-  return o;
-}
-function fl(d,n,bx_,by,label,lx,ly,tbc,anchor="start",both=false){
-  return `<path class="fl${tbc?" tbc":""}" d="${d}" ${both?'marker-start="url(#ah)"':""} marker-end="url(#ah)"/>`+
-   `<circle class="bd" cx="${bx_}" cy="${by}" r="9"/><text class="bt" x="${bx_}" y="${by+3.5}">${n}</text>`+
-   (label?`<text class="lb" x="${lx}" y="${ly}" text-anchor="${anchor}">${esc(label)}</text>`:"");
-}
-const DEFS=`<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker></defs>`;
+<div class="flow">
+<div class="flow-h"><b>BU 3 · Oppein sale to installation</b><span>Oppein design, POS, Xero Projects and Xero</span></div>
+<ol class="steps">
+<li><span class="sn">01</span><span class="stt">Walk-in</span><span class="sd">Register the customer and site address.</span><span class="chips"><span class="c c-i">POS · CRM</span></span></li>
+<li><span class="sn">02</span><span class="stt">Consultation and site measure</span><span class="sd">Needs, budget and site dimensions.</span><span class="chips"><span class="c c-m">Manual</span></span></li>
+<li><span class="sn">03</span><span class="stt">Design iterations</span><span class="sd">Drawings and mock-ups, versioned.</span><span class="chips"><span class="c c-o">Oppein design</span></span></li>
+<li><span class="sn">04</span><span class="stt">Final design → BOM</span><span class="sd">BOM line items sent to the POS on customer approval.</span><span class="chips"><span class="c c-o">Oppein design</span><span class="c c-i">POS</span><span class="c c-int">I7</span></span></li>
+<li><span class="sn">05</span><span class="stt">Complete the quote</span><span class="sd">Add local items, substitute unavailable items.</span><span class="chips"><span class="c c-i">POS</span></span></li>
+<li><span class="sn">06</span><span class="stt">Order and deposit</span><span class="sd">Customer accepts the quote and pays the deposit.</span><span class="chips"><span class="c c-i">POS</span><span class="c c-int">I8</span><span class="c c-int">I9</span></span></li>
+<li><span class="sn">07</span><span class="stt">Stock check and purchase</span><span class="sd">Reserve stock, or raise a PO to Oppein China.</span><span class="chips"><span class="c c-i">POS</span><span class="c c-int">I12</span></span></li>
+<li><span class="sn">08</span><span class="stt">Goods receipt</span><span class="sd">Receive, tag and label the goods.</span><span class="chips"><span class="c c-i">POS</span></span></li>
+<li><span class="sn">09</span><span class="stt">Schedule installation</span><span class="sd">Agree the slot; the MK job is created in Xero Projects.</span><span class="chips"><span class="c c-i">POS</span><span class="c c-s">Xero Projects</span><span class="c c-int">I10</span></span></li>
+<li><span class="sn">10</span><span class="stt">On-site installation</span><span class="sd">MK crew installs and logs time, trips and materials on mobile.</span><span class="chips"><span class="c c-s">Xero Projects</span></span></li>
+<li class="alt"><span class="sn">11</span><span class="stt">Change order</span><span class="sd">If the site differs: revised BOM, labour or trips, approved by the customer, invoiced from Xero.</span><span class="chips"><span class="c c-s">Xero Projects</span><span class="c c-s">Xero</span></span></li>
+<li><span class="sn">12</span><span class="stt">Final bill and payment</span><span class="sd">Balance collected on handover.</span><span class="chips"><span class="c c-i">POS</span><span class="c c-int">I9</span></span></li>
+<li><span class="sn">13</span><span class="stt">Job close</span><span class="sd">Actuals vs estimate; costs and variances posted.</span><span class="chips"><span class="c c-s">Xero Projects</span><span class="c c-s">Xero</span><span class="c c-int">I11</span></span></li>
+</ol>
+</div>
 
-function lanesSVG(k){
-  const lean=k==="v2"; const f=FLOWS[k]; const tbc=n=>!f[n-1][5];
-  let s=`<svg viewBox="0 0 1200 715" role="img" aria-label="Version ${V[k].code} architecture diagram">${DEFS}`;
-  s+=`<rect x="20" y="20" width="360" height="665" rx="12" style="fill:var(--lane1)"/><rect x="420" y="20" width="360" height="665" rx="12" style="fill:var(--lane2)"/><rect x="820" y="20" width="360" height="665" rx="12" style="fill:var(--lane3)"/>`;
-  s+=`<text x="45" y="52" class="lt" style="fill:var(--dorm)">BU 1 · WORKERS' DORMITORY</text><text x="45" y="70" class="ls">400+ beds, 3 floors · MOM-regulated</text>`;
-  s+=`<text x="445" y="52" class="lt" style="fill:var(--xero)">BU 2 · CORE OFFICE</text><text x="445" y="70" class="ls">Accounting, HR, compliance, MIS</text>`;
-  s+=`<text x="845" y="52" class="lt" style="fill:var(--pos)">BU 3 · OPPEIN HOME FRANCHISE</text><text x="845" y="70" class="ls">Design, sales, installation via MK Services</text>`;
-  s+=bx(45,100,310,340,"Aupro / iSense","Dormitory vendor, one to be selected",["Bed, tenancy & tenant KYC","Face-recognition turnstiles (2)","CCTV + security box, 24/7 with audio","Wi-Fi to MOM standard","Public address system","Worker in/out & occupancy reports"].concat(lean?["","Monthly summary export to finance"]:[]),"bx","--dorm");
-  s+=bx(45,530,310,76,"Ministry of Manpower","External · statutory reporting",[],"bx ext");
-  s+=lean?bx(445,100,310,90,"Reports pack","Standard Xero reports",["+ monthly spreadsheet MIS pack"],"bx","--xero")
-         :bx(445,100,310,90,"Management dashboards","MIS per BU + consolidated",["Built on Xero API, AI-assisted"],"bx","--xero");
-  s+=bx(445,250,310,200,"Xero","Financial hub for all 3 BUs",["GL · AP · AR · inventory valuation","P&L, balance sheet per BU + consolidated","Project costs & billing from Xero Projects","Variances: BOM, labour, consumables, trips"],"bx hub");
-  s+=bx(445,530,310,130,"Great HR / Zoho HR","HRMS for staff of all 3 BUs + MK",["Payroll · CPF / SINDA · leave","Contracts · compliance records","KPIs & manager reviews"],"bx","--hr");
-  s+=bx(845,100,310,100,"Oppein Design System","From franchisor · 6 design terminals",["Designs, drawings, versions, BOM"],"bx","--des");
-  s+=bx(845,260,310,180,"PRISM / Cegid","POS + CRM, one to be selected · 6 terminals",["Quotes, billing, card payment terminal","Customer register (CRM)","Delivery & installation booking","Inventory: POs, receiving, issue"],"bx","--pos");
-  s+=bx(845,530,310,130,"Xero Projects","Used by MK Services (installation)",["On-site installation jobs & schedule","Change order management","Linked to POS and Xero"],"bx","--xero");
-  s+=fl("M355,350 H445",1,400,350,"Rent & costs",400,335,tbc(1),"middle");
-  s+=fl("M200,440 V530",2,200,485,"Statutory reports",216,489,false);
-  s+=fl("M1000,200 V260",3,1000,230,"Full BOM",1016,234,true);
-  s+=fl("M845,350 H755",4,800,350,"Sales & stock",800,335,tbc(4),"middle");
-  s+=fl("M1000,440 V530",5,1000,485,"Jobs, change orders",1016,489,tbc(5),"start",true);
-  s+=fl("M845,600 H800 V420 H755",6,800,510,"Costs",808,548,false);
-  s+=fl("M600,530 V450",7,600,490,"Payroll journals",616,494,tbc(7));
-  s+=fl("M600,250 V190",8,600,220,"Xero API",616,224,false);
-  return s+"</svg>";
-}
-function hubSVG(){
-  let s=`<svg viewBox="0 0 1130 710" role="img" aria-label="Version V2 integrated hub architecture diagram">${DEFS}`;
-  s+=`<text x="210" y="40" class="lt" style="fill:var(--muted)">OPERATIONAL SYSTEMS</text><text x="210" y="58" class="ls">BU 1 dormitory · BU 2 HR · BU 3 Oppein</text>`;
-  s+=`<text x="20" y="40" class="lt" style="fill:var(--muted)">EXTERNAL</text>`;
-  s+=bx(210,100,280,170,"Aupro / iSense","BU 1 · Dormitory vendor",["Bed, tenancy & KYC","Turnstiles, CCTV, Wi-Fi, PA","Occupancy & in/out data"],"bx","--dorm");
-  s+=bx(520,100,280,170,"Great HR / Zoho HR","BU 2 · HRMS, all BUs + MK",["Payroll, CPF / SINDA, leave","Contracts, KPIs"],"bx","--hr");
-  s+=bx(830,100,280,70,"Oppein Design System","BU 3 · Designs, versions, BOM",[],"bx","--des");
-  s+=bx(830,200,280,70,"PRISM / Cegid","BU 3 · POS + CRM, inventory, payments",[],"bx","--pos");
-  s+=bx(20,100,160,70,"MOM","Statutory reports",[],"bx ext");
-  s+=bx(20,420,160,150,"Xero Projects","Used by MK Services",["Installation jobs","Change orders","Time & materials"],"bx","--xero");
-  s+=`<rect class="bx mid" x="210" y="310" width="900" height="70" rx="8"/><text x="230" y="338" class="t" style="fill:var(--mid)">Integration layer (iPaaS / middleware)</text><text x="230" y="360" class="c">Field mapping · scheduling & retries · error log & alerts · one place to monitor every sync</text>`;
-  s+=bx(210,420,480,150,"Xero","Financial hub for all 3 BUs",["GL · AP · AR · inventory valuation","P&L, balance sheet per BU + consolidated","Project costs & billing from Xero Projects"],"bx hub");
-  s+=`<rect class="bx mid" x="720" y="420" width="390" height="150" rx="8"/><text x="734" y="446" class="t" style="fill:var(--mid)">Reporting database</text><text x="734" y="463" class="s">Operational data store</text><text x="734" y="484" class="c">Occupancy, pipeline, installs,</text><text x="734" y="502" class="c">stock, headcount + Xero financials</text>`;
-  s+=bx(210,610,900,70,"Management dashboards","MIS per BU + consolidated · near real-time · AI-assisted queries",[],"bx","--xero");
-  s+=fl("M210,135 H180",2,195,118,"",0,0,false);
-  s+=fl("M970,170 V200",3,970,185,"Full BOM + revisions",986,189,true);
-  s+=fl("M350,270 V310",1,350,290,"Invoices, occupancy",366,294,true);
-  s+=fl("M660,270 V310",7,660,290,"Payroll, headcount",676,294,true);
-  s+=fl("M970,270 V310",4,970,290,"Sales, stock",986,294,true);
-  s+=fl("M450,380 V420",11,450,400,"Financial postings",466,404,true).replace(">11<",">·<");
-  s+=fl("M915,380 V420",11,915,400,"Operational data",931,404,true).replace(">11<",">·<");
-  s+=fl("M210,345 H100 V420",5,100,382,"Jobs, changes",116,386,true,"start",true);
-  s+=fl("M180,495 H210",6,195,478,"",0,0,false);
-  s+=fl("M660,570 V610",8,660,590,"Financial + operational KPIs",676,594,true);
-  return s+"</svg>";
-}
+<div class="flow">
+<div class="flow-h"><b>Core office · Month-end close and reporting</b><span>Everything closes in Xero</span></div>
+<ol class="steps">
+<li><span class="sn">01</span><span class="stt">Dorm revenue</span><span class="sd">Already in Xero from the dormitory system.</span><span class="chips"><span class="c c-s">Xero</span><span class="c c-int">I3</span></span></li>
+<li><span class="sn">02</span><span class="stt">Oppein sales and stock value</span><span class="sd">Already in Xero from the POS.</span><span class="chips"><span class="c c-s">Xero</span><span class="c c-int">I9</span></span></li>
+<li><span class="sn">03</span><span class="stt">Payroll journals</span><span class="sd">Posted per entity, incl. CPF.</span><span class="chips"><span class="c c-s">HRMS</span><span class="c c-s">Xero</span><span class="c c-int">I4</span></span></li>
+<li><span class="sn">04</span><span class="stt">MK project costs</span><span class="sd">Actuals and variances from Xero Projects.</span><span class="chips"><span class="c c-s">Xero</span><span class="c c-int">I11</span></span></li>
+<li><span class="sn">05</span><span class="stt">Bank reconciliation</span><span class="sd">Bank feeds, card and PayNow settlements.</span><span class="chips"><span class="c c-s">Xero</span><span class="c c-int">I6</span></span></li>
+<li><span class="sn">06</span><span class="stt">Allocations and intercompany</span><span class="sd">Core office costs; MK installation charged to Oppein.</span><span class="chips"><span class="c c-s">Xero</span></span></li>
+<li><span class="sn">07</span><span class="stt">Entity and group reports</span><span class="sd">P&amp;L, balance sheet, cost analysis.</span><span class="chips"><span class="c c-s">Xero</span></span></li>
+<li class="alt"><span class="sn">08</span><span class="stt">Management reporting</span><span class="sd">Each system's dashboard; consolidated view optional.</span><span class="chips"><span class="c c-m">Dashboards</span><span class="c c-int">I13</span></span></li>
+</ol>
+</div>
 
-/* ---------- processes ---------- */
-const SYS={dorm:["Aupro / iSense","t-dorm"],pos:["PRISM / Cegid","t-pos"],des:["Oppein Design","t-des"],xero:["Xero","t-xero"],hr:["HRMS","t-hr"],ext:["Manual / external","t-ext"],mid:["Integration layer","t-mid"],dash:["Dashboards","t-xero"],xp:["Xero Projects","t-xero"]};
-function procs(k){
-  const L=false,H=k==="v2",pick=o=>o[k]||"";
-  const month=[
-    ["Dorm revenue & costs","From Aupro / iSense",["dorm","xero"],"Q4",0,pick({v1:"Already in Xero via API",v2:"Already synced"})],
-    ["Oppein sales & stock value","From PRISM / Cegid",["pos","xero"],"",0,pick({v1:"Already in Xero via connector",v2:"Already synced"})],
-    ["Payroll journals","Split by BU",["hr","xero"],"",0,L?"CSV import":""],
-    ["MK project costs","Actuals and variances from Xero Projects",["xp","xero"],"",0,""],
-    ["Allocations & intercompany","Core office costs, MK charges to Oppein",["xero"],"Q11, Q12",0,""],
-    ["BU & consolidated reports","P&L, balance sheet, cost analysis",["xero"],"Q11",0,""],
-    ["Management reporting","MIS per BU",L?["xero"]:["dash"],"",0,pick({v1:"Dashboards on Xero API",v2:"Financial + operational KPIs, near real-time"})]];
-  if(H) month.unshift(["Check sync log","Resolve failed syncs before close",["mid"],"",0,"Only in this version"]);
-  return [
-   ["BU 1 · Dormitory","--dorm","Worker move-in to monthly billing",[
-    ["Bed booking","Employer requests beds and period",["dorm"],"Q1",0,""],
-    ["Worker KYC","Work permit, passport, employer details",["dorm"],"",0,""],
-    ["Bed allocation & tenancy","Assign bed, issue tenancy agreement",["dorm"],"Q2",0,""],
-    ["Face enrolment","Register worker on turnstiles",["dorm"],"",0,""],
-    ["Monthly rent invoice","Raised per bed / per employer",L?["dorm"]:H?["dorm","mid","xero"]:["dorm","xero"],"Q1, Q4",0,pick({v1:"Pushed to Xero by API",v2:"Synced to Xero via integration layer"})],
-    ["Payment & reconciliation","Receipt matched to invoice",["xero"],"",0,""],
-    ["Move-out","Revoke access, refund deposit, free bed",["dorm","xero"],"Q2",0,""]]],
-   ["BU 1 · Dormitory","--dorm","Daily operations & MOM compliance",[
-    ["Turnstile entry / exit","Face recognition logs every movement",["dorm"],"",0,""],
-    ["CCTV & security box","24/7 recording incl. audio at gate",["dorm"],"",0,""],
-    ["Occupancy & in/out records","Live count per floor and room",["dorm"],"",0,H?"Also fed to reporting DB":""],
-    ["Statutory report","Submitted to Ministry of Manpower",["dorm","ext"],"Q3",0,""],
-    ["Maintenance roster","Lift, fire equipment, generator, cleaning",["ext"],"Q13",1,"Out of scope; cost separately"]]],
-   ["BU 3 · Oppein Home","--pos","Sale to installation",[
-    ["Lead / walk-in","Register customer",["pos"],"",0,""],
-    ["Consultation & site measure","Needs, budget, site dimensions",["ext"],"",0,""],
-    ["Design iterations","Drawings and mock-ups, versioned",["des"],"",0,""],
-    ["Final design → BOM","BOM generated on customer approval",["des","pos"],"Q5",0,pick({v1:"Full BOM loaded into POS",v2:"Full BOM synced automatically"})],
-    ["Quote & deposit","Customer accepts, pays deposit",["pos"],"",0,""],
-    ["Stock check & purchase","Reserve stock or PO to Oppein China",["pos"],"Q6",0,H?"Reservation automatic":""],
-    ["Goods receipt","Receive, tag and label goods",["pos"],"",0,""],
-    ["Schedule installation","Agree slot; job handed to Xero Projects",["pos","xp"],"Q7",0,pick({v1:"Job sent from POS to Xero Projects",v2:"Job synced via integration layer"})],
-    ["Create MK job","Crew, man-day estimate, materials",["xp"],"Q10",0,""],
-    ["On-site installation","MK crew installs; time and materials logged",["xp"],"",0,""],
-    ["Change order","If site differs: BOM, labour, trips revised; customer approves",["xp","pos"],"Q8",1,pick({v1:"Raised in Xero Projects, sent to POS for billing",v2:"Raised in Xero Projects, synced to POS"})],
-    ["Final bill & payment","Balance collected",["pos"],"Q9",0,pick({v1:"Through POS payment terminal",v2:"POS, auto-reconciled in Xero"})],
-    ["Job close","Actual vs. estimate; costs posted to Xero",["xp","xero"],"",0,""]]],
-   ["BU 2 · Core Office","--xero","Month-end close & reporting",month],
-   ["BU 2 · Core Office","--hr","Hire to pay",[
-    ["Hire & contract","Employee record, employment contract",["hr"],"Q10",0,""],
-    ["Leave & attendance","Medical, annual, unpaid, maternity, etc.",["hr"],"",0,""],
-    ["Monthly payroll","Incl. CPF / SINDA contributions",["hr"],"",0,""],
-    ["Post to Xero","Payroll journal by BU",["hr","xero"],"",0,pick({v1:"Native integration",v2:"Via integration layer"})],
-    ["KPIs & reviews","Targets, manager reviews, history",["hr"],"",0,""],
-    ["System access","Grant / revoke access per role",["ext"],"Q14",0,""]]]
-  ];
-}
-const AR='<div class="ar" aria-hidden="true"><svg viewBox="0 0 16 12"><path d="M0 6h12M8 1l6 5-6 5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></div>';
-const lvl=n=>`<span class="lvl" aria-hidden="true">${[1,2,3].map(i=>`<i class="${i<=n?"on":""}"></i>`).join("")}</span>${["","Low","Medium","High"][n]}`;
+<div class="flow">
+<div class="flow-h"><b>Core office · Hire to pay</b><span>HRMS and Xero</span></div>
+<ol class="steps">
+<li><span class="sn">01</span><span class="stt">Hire and contract</span><span class="sd">Employee record and employment contract.</span><span class="chips"><span class="c c-s">HRMS</span></span></li>
+<li><span class="sn">02</span><span class="stt">Leave and attendance</span><span class="sd">Medical, annual, unpaid, hospitalisation, maternity.</span><span class="chips"><span class="c c-s">HRMS</span></span></li>
+<li><span class="sn">03</span><span class="stt">Monthly payroll</span><span class="sd">Incl. CPF and SINDA/CDAC contributions.</span><span class="chips"><span class="c c-s">HRMS</span></span></li>
+<li><span class="sn">04</span><span class="stt">Statutory submission</span><span class="sd">CPF monthly, IR8A annually.</span><span class="chips"><span class="c c-s">HRMS</span><span class="c c-int">I5</span></span></li>
+<li><span class="sn">05</span><span class="stt">Post to Xero</span><span class="sd">Payroll journal per entity.</span><span class="chips"><span class="c c-s">HRMS</span><span class="c c-s">Xero</span><span class="c c-int">I4</span></span></li>
+<li><span class="sn">06</span><span class="stt">KPIs and reviews</span><span class="sd">Targets, manager reviews, history.</span><span class="chips"><span class="c c-s">HRMS</span></span></li>
+<li><span class="sn">07</span><span class="stt">System access</span><span class="sd">Grant and revoke access in each system.</span><span class="chips"><span class="c c-m">Manual</span></span></li>
+</ol>
+</div>
+</section>
 
-function render(k){
-  const v=V[k];
-  const diagram=k==="v2"?hubSVG():lanesSVG(k);
-  const rows=FLOWS[k].map(f=>`<tr><td class="n">${f[0]}</td><td>${esc(f[1])} → ${esc(f[2])}</td><td>${esc(f[3])}</td><td>${esc(f[4])}</td><td><span class="pill ${f[5]?"ok":"open"}">${f[5]?"Agreed":"To confirm"}</span></td></tr>`).join("");
-  const flows=procs(k).map(([bu,col,title,steps])=>`<div class="flow"><div class="bu" style="color:var(${col})">${bu}</div><h3>${esc(title)}</h3><div class="lane">`+
-    steps.map((s,i)=>{const [nm,d,sys,q,cond,note]=s;
-      const chg=note&&!/Out of scope/.test(note);
-      return `<div class="step${cond?" cond":""}${chg?" chg":""}"><div class="n">${String(i+1).padStart(2,"0")}</div><div class="nm">${esc(nm)}</div><div class="d">${esc(d)}</div>${note?`<div class="v">${esc(note)}</div>`:""}<div class="ft">${sys.map(x=>`<span class="tag ${SYS[x][1]}">${SYS[x][0]}</span>`).join("")}</div></div>`}).join(AR)+`</div></div>`).join("");
-  document.getElementById("view").innerHTML=`
-  <section>
-    <p class="approach"><strong>${v.code} · ${v.name}.</strong> ${esc(v.approach)}</p>
-    <dl class="sum" style="margin:0">
-      <div><dt>Positioning</dt><dd>${v.tagline}</dd></div>
-      <div><dt>Manual effort</dt><dd>${lvl(v.manual)}</dd></div>
-      <div><dt>Integration build</dt><dd>${lvl(v.build)}</dd></div>
-      <div><dt>Running cost</dt><dd>${lvl(v.run)}</dd></div>
-      <div><dt>Main risk</dt><dd>${esc(v.risk)}</dd></div>
-      <div><dt>Best fit when</dt><dd>${esc(v.fit)}</dd></div>
-    </dl>
-  </section>
-  <section>
-    <h2>Architecture diagram</h2>
-    <div class="panel">${diagram}</div>
-    <div class="legend">
-      <span><svg width="34" height="10"><line x1="0" y1="5" x2="34" y2="5" class="fl"/></svg> Flow agreed</span>
-      <span><svg width="34" height="10"><line x1="0" y1="5" x2="34" y2="5" class="fl tbc"/></svg> Method or scope to confirm</span>
-      <span><svg width="34" height="14"><rect x="1" y="1" width="32" height="12" rx="3" class="bx ext"/></svg> External party</span>
-    </div>
-  </section>
-  <section>
-    <h2>Data flows</h2>
-    <div class="tbl"><table><thead><tr><th>#</th><th>From → To</th><th>Data</th><th>How</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table></div>
-  </section>
-  <section>
-    <h2>Process flows</h2>
-    <div class="legend" style="margin:0">
-      <span><span class="sw" style="background:var(--mid-bg);border:1px solid var(--mid)"></span>Works differently in this version</span>
-      <span><span class="sw" style="border:1px dashed var(--q)"></span>Only when needed</span>
-    </div>
-    ${flows}
-  </section>`;
-  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",b.dataset.k===k));
-}
-document.getElementById("tabs").innerHTML=Object.entries(V).map(([k,v])=>`<button class="tab" role="tab" data-k="${k}"><b>${v.code} · ${v.name}</b><span>${v.tagline}</span></button>`).join("");
-document.getElementById("tabs").addEventListener("click",e=>{const b=e.target.closest(".tab");if(b){location.hash=b.dataset.k;}});
-function route(){const k=(location.hash||"").slice(1);render(V[k]?k:"v1");}
-window.addEventListener("hashchange",route); route();
-</script>
+<section id="integrations">
+<h2>Integration register</h2>
+<div class="tw"><table>
+<thead><tr><th>#</th><th>From → To</th><th>Data</th><th>Trigger</th><th>Built by</th><th>Open point</th></tr></thead>
+<tbody>
+<tr><td><span class="idn d-std">I1</span></td><td>Turnstiles, CCTV, Wi-Fi, PA → DMS</td><td>Face match events, in/out, alarms, clip references</td><td>Real time</td><td><span class="st st-std">Vendor</span></td><td>Inside the vendor package. Face templates stay in the vendor system.</td></tr>
+<tr><td><span class="idn d-tbc">I2</span></td><td>DMS → MOM</td><td>Headcount in/out, nominal roll, incident reports</td><td>Periodic and per incident</td><td><span class="st st-std">Vendor</span></td><td>Does the DMS submit directly, or do staff upload?</td></tr>
+<tr><td><span class="idn d-tbc">I3</span></td><td>DMS → Xero (dorm entity)</td><td>Rent invoices, deposits, payments received</td><td>Monthly or per invoice</td><td><span class="st st-tbc">Vendor push, IR supervises</span></td><td>Method unknown: native connector, API or file. Does the DMS do billing at all?</td></tr>
+<tr><td><span class="idn d-tbc">I4</span></td><td>HRMS → Xero</td><td>Pay-run journal, CPF and SINDA/CDAC liabilities</td><td>Monthly per entity</td><td><span class="st st-tbc">Native connector</span></td><td>Check the Xero connector of the HRMS chosen.</td></tr>
+<tr><td><span class="idn d-std">I5</span></td><td>HRMS → CPF Board, IRAS</td><td>CPF contributions, IR8A</td><td>Monthly, annual</td><td><span class="st st-std">Native</span></td><td>Standard Singapore payroll feature.</td></tr>
+<tr><td><span class="idn d-std">I6</span></td><td>Banks ↔ Xero</td><td>Bank feeds, payments, card and PayNow settlements</td><td>Daily</td><td><span class="st st-std">Native</span></td><td>None.</td></tr>
+<tr><td><span class="idn d-ir">I7</span></td><td>Oppein design → POS</td><td>Final design BOM as line items (SKU, qty), design reference</td><td>When the design is final</td><td><span class="st st-ir">IR</span></td><td>Needs the export format from Oppein and SKU mapping (about 1,800 stocked of 10,000).</td></tr>
+<tr><td><span class="idn d-std">I8</span></td><td>Payment terminals ↔ POS</td><td>Payment requests and results</td><td>Per payment</td><td><span class="st st-std">POS standard</span></td><td>Confirm payment methods and provider.</td></tr>
+<tr><td><span class="idn d-ir">I9</span></td><td>POS → Xero</td><td>Customers, sales invoices, deposits, payments, supplier bills, stock value</td><td>Per transaction or daily</td><td><span class="st st-ir">IR</span></td><td>Deposit, progress and final invoices post separately.</td></tr>
+<tr><td><span class="idn d-ir">I10</span></td><td>POS → Xero Projects (one-way)</td><td>Project ID, customer, site, order value, BOM estimate</td><td>When the installation is scheduled</td><td><span class="st st-ir">IR</span></td><td>Full BOM or order value only.</td></tr>
+<tr><td><span class="idn d-std">I11</span></td><td>Xero Projects → Xero GL</td><td>Change orders, MK labour, trips, consumables, variances</td><td>Ongoing</td><td><span class="st st-std">Native</span></td><td>MK crews use the Xero mobile app.</td></tr>
+<tr><td><span class="idn d-tbc">I12</span></td><td>POS ↔ Oppein China</td><td>POs out; shipment notices and goods receipt in</td><td>Per order and shipment</td><td><span class="st st-tbc">Manual or file</span></td><td>How does Oppein China receive POs and confirm shipments?</td></tr>
+<tr><td><span class="idn d-opt">I13</span></td><td>Xero, DMS, POS, HRMS → management dashboard</td><td>Revenue, cost, occupancy, sales, headcount by unit</td><td>Daily</td><td><span class="st st-tbc">Optional</span></td><td>Only if the client wants one consolidated view.</td></tr>
+</tbody></table></div>
+</section>
 
-</html>
+<section id="systems">
+<h2>System list</h2>
+<div class="tw"><table>
+<thead><tr><th>Unit</th><th>Capability</th><th>System (options)</th><th>Supplied by</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>BU 1 Dormitory</td><td>Dorm management, turnstiles, CCTV, Wi-Fi, PA</td><td>Aupro or iSense</td><td>Vendor, installed end to end</td><td>Aupro runs on-prem or on AWS; iSense is hosted on Alibaba Cloud. IR supports under the maintenance agreement.</td></tr>
+<tr><td>Core office</td><td>Accounting, all entities</td><td>Xero</td><td>SaaS, client subscription</td><td>One organisation per entity or tracking categories: to confirm.</td></tr>
+<tr><td>Core office</td><td>HR, payroll, leave, KPIs</td><td>Great HR or Zoho HR</td><td>SaaS, client subscription</td><td>Covers MK staff as well.</td></tr>
+<tr><td>Core office</td><td>Building maintenance roster</td><td>To be selected</td><td>Third party</td><td>Not in current scope; quoted separately.</td></tr>
+<tr><td>BU 3 Oppein</td><td>POS, CRM, quotes, inventory, payments</td><td>Retail Pro Prism or Cegid</td><td>IR</td><td>6 POS laptops. CRM and inventory inside the POS.</td></tr>
+<tr><td>BU 3 Oppein</td><td>Design and BOM</td><td>Oppein design system</td><td>Oppein (franchisor)</td><td>Ready to use; no development.</td></tr>
+<tr><td>BU 3 MK</td><td>Jobs, change orders, timesheets</td><td>Xero Projects</td><td>SaaS, client subscription</td><td>Per-user mobile licence for MK crews.</td></tr>
+</tbody></table></div>
+</section>
+
+
+<p class="note">Questions for the client are tracked in the <a href="https://docs.google.com/spreadsheets/d/1PYPsXAB2DvhTFyzhw4e6ihrPGZLmhRvg_XoH-f1v7qA/edit">Client Questions v2</a> sheet. Sources: Fong Tat brief (10 Nov 2026), internal briefing call, team review of the architecture options draft.</p>
+</div>
+
+</body></html>
